@@ -1,3 +1,17 @@
+Metadata-Version: 2.4
+Name: locopipe
+Version: 0.1
+Summary: An automated Snakemake pipeline that streamlines a set of essential population genomic analyses for low-coverage whole genome sequencing (lcWGS) data.
+Author: Nicolas Lau
+License-Expression: GPL-3.0-or-later
+Project-URL: Homepage, https://github.com/sudmantlab/loco-pipe
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>8.0
+Requires-Dist: snakemake>=9.0
+Dynamic: license-file
+
 loco-pipe: a Snakemake pipeline for low-coverage whole-genome sequencing
 ================
 
@@ -23,25 +37,6 @@ loco-pipe: a Snakemake pipeline for low-coverage whole-genome sequencing
 **loco-pipe** is an automated Snakemake pipeline that streamlines a set
 of essential population genomic analyses for **lo**w-**co**verage whole
 genome sequencing (lcWGS) data.
-
-### Get Started
-1. Locally install the python package
-```bash
-pixi init
-
-## or ##
-pip install . -e
-```
-
-2. Initialize an output directory
-```bash
-loco init -o toytest -r toyfish/reference/toy_refgen.fa toyfish/bams/
-```
-
-3. Run loco-pipe
-```bash
-loco pipe toytest
-```
 
 ## Key features
 

@@ -1,0 +1,2 @@
+[console_scripts]
+loco = locopipe.__init__:cli

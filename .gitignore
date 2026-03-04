@@ -49,4 +49,6 @@ toyfish/slurm-logs/*
 toyfish/.snakemake/*
 *done
 *bamlist*
-*chr_list*
+*chr_list*# pixi environments
+.pixi/*
+!.pixi/config.toml

@@ -1,4 +1,4 @@
-# This is the configuration file for loco-pipe.
+CONFIG = """# This is the configuration file for loco-pipe.
 # Please read it through and make edits when needed.
 # Importantly, please copy this file to the "config" folder in your project base directory,
 # and make your edits there rather in the "loco-pipe" directory. 
@@ -58,35 +58,35 @@ global:
 
   # Full path of the project base directory. 
   # This folder should contain subfolders such as "config" and "docs".
-  basedir: "/path/to/loco-pipe/toyfish"
+  basedir: {basedir}
   
   # Full path of the reference genome.
   # The reference genome should be in fasta format. Under the current version, we recommend reference genome 
   # to be approximately at chromosome level. In other words, we advice against a highly fragmented reference genome
   # (e.g. L80 > 100). Due to the fact that many downstream analyses are performed at chromosome/scaffold/contig level,
   # having a highly-fragmented reference genome will create too many parallel jobs and might put cluster in high stress.
-  reference: "/path/to/loco-pipe/toyfish/reference/toy_refgen.fa"
+  reference: {reference}
 
   # Full path of the folder in which R scripts required for the pipeline are saved (i.e. you will need to change the 
   # "/path/to/" part to the path where loco-pipe is downloaded on your computer.)
-  scriptdir: "/path/to/loco-pipe/workflow/scripts"
+  scriptdir: {scriptdir}
   
   # The name of the tab-separated sample table file.
   # It should include at least three columns: "sample_name", "bam", and a third column that specifies the grouping 
   # information. If you do not have a grouping variable a priori when first running loco-pipe, please make sure to 
   # create a fake column in your dataset with all samples having the same entry.
-  sample_table: "sample_table.tsv"
+  sample_table: {sampletable}
 
   # The name of a column in the sample table that specifies the grouping information.
   # If you do not have a grouping variable a priori when first running loco-pipe, enter the name of the fake column.
-  pop_level: "species"
+  pop_level: {groupcol}
 
   # The name of the tab-separated chromosme table. 
   # It should have one or two unnamed columns. The first column should contain the original
   # chromosome/scaffold/contig names that you would like to include in the analysis. These should exactly match
   # the names in the reference genome. The second column is optional, and it should contain the new names
   # that would be shown in Manhattan-style plots. Shorter, simpler names are recommended for clarity of the plots.
-  chr_table: "chr_table.tsv"
+  chr_table: {chromtable}
   
   # The genotype likelihood model to be used in ANGSD. Enter 1 for the Samtools model and 2 for the GATK model. 
   # See https://www.popgen.dk/angsd/index.php/Genotype_Likelihoods for details.
@@ -447,3 +447,4 @@ lostruct:
   # The name of a column in the sample table that you want to to color the points by in concensus PCA plots.
   # If you do not have a grouping color, use the name of the fake column that you create.
   color_by: "population"
+"""
