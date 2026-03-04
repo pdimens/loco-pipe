@@ -87,9 +87,10 @@ def init(reference, output, samples):
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
 @click.option('-@', '--threads', default = 8, show_default = True, type = click.IntRange(1,999, clamp = True), help = 'Number of threads to use')
+@click.option('-d', '--dry', is_flag = True, default = False, show_default = True, help = 'Perform a snakemake dry run')
 @click.argument("directory", default = ".", type = click.Path(exists=True, file_okay=False, readable=True))
 @click.help_option('--help', hidden = True)
-def pipe(directory, threads):
+def pipe(directory, threads, dry):
     """
     Launch the loco-pipe snakemake workflow
     
@@ -106,6 +107,8 @@ def pipe(directory, threads):
     cmd += ["--snakefile", prjdir]
     cmd += ["--configfile", os.path.join(os.path.relpath(directory), "locopipe.yaml")]
     cmd += ["--profile", os.path.relpath("workflow")]
+    if dry:
+        cmd += ["-n"]
     print("Snakemake command:\n" + " ".join(cmd))
     try:
         subprocess.run(cmd)

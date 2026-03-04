@@ -43,6 +43,8 @@ loco init -o toytest -r toyfish/reference/toy_refgen.fa toyfish/bams/
 loco pipe toytest
 ```
 
+Use `--help` to see the command docstrings.
+
 ## Key features
 
 - Streamlining of several essential population genomic analyses
