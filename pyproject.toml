@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-loco = "locopipe.__init__:cli"
+loco-pipe = "locopipe.__init__:cli"
 
 
 [project.urls]
@@ -27,8 +27,7 @@ where = ["."]
 exclude = ["test/*", ".deprecated/*", "resources/*", ".github/*"]
 
 [tool.setuptools.package-data]
-harpy = ["**/*"]
-
+locopipe = ["**/*"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
@@ -42,3 +41,4 @@ locopipe = { path = ".", editable = true }
 [tool.pixi.dependencies]
 numpy = ">=2.4.2,<3"
 pandas = ">=3.0.1,<4"
+graphviz = ">=14.1.2,<15"

@@ -22,7 +22,7 @@ def cli():
 @click.help_option('--help', hidden = True)
 def init(reference, output, samples):
     """
-    Initialize a configured loco-pipe project directory
+    Initialize a configured loco-pipe project
 
     Create a directory (--output) with all the components loco-pipe needs to run. Must include
     a `--reference` file. Provide the input BAM files and/or directories at the end of the command
@@ -90,7 +90,7 @@ def init(reference, output, samples):
 @click.option('-d', '--dry', is_flag = True, default = False, show_default = True, help = 'Perform a snakemake dry run')
 @click.argument("directory", default = ".", type = click.Path(exists=True, file_okay=False, readable=True))
 @click.help_option('--help', hidden = True)
-def pipe(directory, threads, dry):
+def start(directory, threads, dry):
     """
     Launch the loco-pipe snakemake workflow
     
@@ -115,5 +115,5 @@ def pipe(directory, threads, dry):
     except KeyboardInterrupt:
         pass
 
-cli.add_command(pipe)
+cli.add_command(start)
 cli.add_command(init)

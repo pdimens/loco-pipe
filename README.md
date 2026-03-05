@@ -27,7 +27,7 @@ genome sequencing (lcWGS) data.
 ### Get Started
 1. Locally install the python package
 ```bash
-pixi init
+pixi shell
 
 ## or ##
 pip install . -e
@@ -35,12 +35,12 @@ pip install . -e
 
 2. Initialize an output directory
 ```bash
-loco init -o toytest -r toyfish/reference/toy_refgen.fa toyfish/bams/
+loco-pipe init -o toytest -r toyfish/reference/toy_refgen.fa toyfish/bams/
 ```
 
 3. Run loco-pipe
 ```bash
-loco pipe toytest
+loco-pipe start toytest
 ```
 
 Use `--help` to see the command docstrings.
