@@ -54,7 +54,7 @@ Use `--help` to see the command docstrings.
 - Key results are plotted automatically for visual inspection
 - Easy customization through a configuration file
 - [A quick start guide with an example
-  dataset](https://github.com/sudmantlab/loco-pipe/blob/main/toyfish.md)
+  dataset](https://github.com/sudmantlab/loco-pipe/blob/main/guides/toyfish.md)
 - Extensive in-line annotation along with a detailed [user’s
   manual](manual/README.md)
 - Flexible architecture that allows for the addition of new features
@@ -80,7 +80,7 @@ Use `--help` to see the command docstrings.
 - Heterozygosity estimation
 - Local PCA analysis
 
-![](simplified_flowchart.png) A simplified flowchart of loco-pipe
+![](guides/simplified_flowchart.png) A simplified flowchart of loco-pipe
 highlighting its key functionalities. The box in dotted lines represents
 user-provided input files, and boxes in solid lines represent key
 analytical steps in the pipeline. Plots are generated using our example
@@ -90,7 +90,7 @@ detailed descriptions of the plots.
 
 ## Complete pipeline flowchart
 
-![](complete_flowchart.png) Each box represents a Snakemake rule and is
+![](guides/complete_flowchart.png) Each box represents a Snakemake rule and is
 colored based on the major groups of analyses in the form of separate
 Snakefiles (shown at the top left corner). The differently colored
 shades indicate the types of SNPs or sites on which the analyses are
