@@ -1,4 +1,0 @@
-locopipe
-manual
-toyfish
-toytest

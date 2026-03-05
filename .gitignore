@@ -52,3 +52,8 @@ toyfish/.snakemake/*
 *chr_list*# pixi environments
 .pixi/*
 !.pixi/config.toml
+
+#python stuff
+*.egg-info
+*__pycache__
+.pixi
