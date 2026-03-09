@@ -18,17 +18,17 @@ def cli():
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
 @click.option('-o', "--output", default = ".", show_default = True, type = str, required = False, help = "name of directory to create")
 @click.option("-r", "--reference", required = True, type = click.Path(exists=True, dir_okay=False, readable=True), help = "reference fasta file which BAMs were aligned to")
+@click.option('-s', '--simple', is_flag = True, default = False, show_default = True, help = 'Do not annotate the workflow YAML file')
 @click.argument("samples", nargs = -1, required = True, type = BAMfile())
 @click.help_option('--help', hidden = True)
-def init(reference, output, samples):
+def init(reference, output, samples, simple):
     """
     Initialize a configured loco-pipe project
 
     Create a directory (--output) with all the components loco-pipe needs to run. Must include
     a `--reference` file. Provide the input BAM files and/or directories at the end of the command
-    as individual files/folders, using shell wildcards (e.g. `data/acronotus*.fq`), or both.
+    as individual files/folders, using shell wildcards (e.g. `data/acro*.bam`), or both.
     """
-    #dir = os.path.join(output, "workflow")
     os.makedirs(os.path.join(output, "docs"), exist_ok=True)
     notices = []
     shutil.copytree(
@@ -58,6 +58,14 @@ def init(reference, output, samples):
             sampletable = "samples.tsv",
             chromtable = "contigs.tsv"
         )
+        if simple:
+            _cnf = []
+            for i in cnf.splitlines():
+                _line = i.rstrip()
+                if not _line or i.startswith("  #") or i.startswith("#"):
+                    continue    
+                _cnf.append(i.rstrip())
+            cnf = "\n".join(_cnf)
         cnfg.write(cnf + "\n")
     
     with open(reference, 'r') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
@@ -80,10 +88,10 @@ def init(reference, output, samples):
             tb.write(f"{_name}\t{i}\tgroupname\n")
     
     notices.append(
-        f"- Samples have all been assigned to a single group and need to have distinct classifications in {os.path.join(output, 'samples.tsv')}."
+        f"- Samples have all been assigned to a single group and need to have distinct classifications in {os.path.join(output, 'docs', 'samples.tsv')}."
     )
 
-    print("Notices:\n" + "\n".join(notices), file = sys.stderr)
+    print("Notice:\n" + "\n".join(notices), file = sys.stderr)
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
 @click.option('-@', '--threads', default = 8, show_default = True, type = click.IntRange(1,999, clamp = True), help = 'Number of threads to use')
