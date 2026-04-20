@@ -12,7 +12,10 @@ readme = {file = "README.md", content-type = "text/markdown"}
 license = "GPL-3.0-or-later"
 dependencies = [
     'click>8.0',
-    'snakemake>=9.0'
+    'snakemake>=9.0',
+    'numpy>=2.4.2',
+    'pandas>=3.0.1',
+    'graphviz>=14.1.2'
 ]
 
 [project.scripts]
