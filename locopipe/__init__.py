@@ -68,14 +68,23 @@ def init(reference, output, samples, simple):
             cnf = "\n".join(_cnf)
         cnfg.write(cnf + "\n")
     
-    with open(reference, 'r') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
-        id = 0
-        for i in fa:
-            if i.startswith(">"):
-                id += 1
-                _name = i.lstrip(">").split(" ")[0].strip()
-                tb.write(f"{_name}\t{id}\n")
-    
+    try:
+        with open(reference, 'r') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
+            id = 0
+            for i in fa:
+                if i.startswith(">"):
+                    id += 1
+                    _name = i.lstrip(">").split(" ")[0].strip()
+                    tb.write(f"{_name}\t{id}\n")
+    except UnicodeDecodeError:
+        import gzip
+        with gzip.open(reference, 'rt') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
+            id = 0
+            for i in fa:
+                if i.startswith(">"):
+                    id += 1
+                    _name = i.lstrip(">").split(" ")[0].strip()
+                    tb.write(f"{_name}\t{id}\n")
     if id >= 100:
         notices.append(
             "- Number of included chromosomes is or exceeds 100, which is not recommended. "
