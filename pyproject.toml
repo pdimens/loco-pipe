@@ -44,4 +44,4 @@ locopipe = { path = ".", editable = true }
 [tool.pixi.dependencies]
 numpy = ">=2.4.2,<3"
 pandas = ">=3.0.1,<4"
-graphviz = ">=14.1.2,<15"
+graphviz = ">=0.21,<1"
