@@ -25,7 +25,13 @@ of essential population genomic analyses for **lo**w-**co**verage whole
 genome sequencing (lcWGS) data.
 
 ### Get Started
-1. Locally install the python package
+0. Clone this repository
+```bash
+git clone https://github.com/pdimens/loco-pipe.git
+cd loco-pipe
+```
+
+2. Locally install the python package
 ```bash
 pixi shell
 
