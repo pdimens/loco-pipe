@@ -19,22 +19,24 @@ class BAMfile(click.ParamType):
             self.fail(f"{value} was not found.", param, ctx)
 
         if not filepath.is_dir():
-            _f = filepath.resolve().as_posix()
+            _f = filepath.absolute().as_posix()
             if not self.re_ext.search(_f):
                 self.fail(f"{value} does not end with the accepted extensions for alignment files: .bam (case insensitive).")
             infiles.append(_f)
         else:
             for i in filepath.glob("*"):
                 if i.is_file() and self.re_ext.search(i.name):
-                    infiles.append(i.resolve().as_posix())
+                    infiles.append(i.absolute().as_posix())
 
         # name and permission validations
         for _file in infiles:
             if not os.access(_file, os.R_OK):
                 self.fail(f"Alignment file {_file} does not have user read permission.", param, ctx)
-            #if self.inv_pattern.search(_file):
             if self.inv_pattern.search(os.path.basename(_file)):
-                self.fail(f"Invalid characters detected in file name {_file}. Valid file names may contain only:\n  - A-Z 0-9 characters (case insensitive)\n  - . (period)\n  - _ (underscore)\n  - - (dash)")
+                self.fail(
+                    f"Invalid characters detected in file name {_file}. Valid file names may contain only:"
+                    "\n  - A-Z 0-9 characters (case insensitive)\n  - . (period)\n  - _ (underscore)\n  - - (dash)"
+                )
 
         if len(infiles) < 1:
             self.fail(f"There were no files ending with the accepted alignment extensions .bam (case insensitive) in {value}.")
