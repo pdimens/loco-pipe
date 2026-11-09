@@ -8,7 +8,7 @@ import subprocess
 import sys
 import yaml
 from locopipe.workflow import CONFIG
-from locopipe.validation import BAMfile, valid_dir
+from locopipe.validation import BAMfile
 
 @click.help_option('--help', hidden = True)
 @click.group()
@@ -16,18 +16,18 @@ def cli():
     """Convenience features to make loco-pipe friendlier"""
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
-@click.option('-o', "--output", default = ".", show_default = True, type = str, required = False, help = "name of directory to create")
-@click.option("-r", "--reference", required = True, type = click.Path(exists=True, dir_okay=False, readable=True), help = "reference fasta file which BAMs were aligned to")
 @click.option('-s', '--simple', is_flag = True, default = False, show_default = True, help = 'Do not annotate the workflow YAML file')
+@click.argument('output', type = click.Path(exists = False, resolve_path = True), required = True)
+@click.argument('reference', required = True, type = click.Path(exists=True, dir_okay=False, readable=True))
 @click.argument("samples", nargs = -1, required = True, type = BAMfile())
 @click.help_option('--help', hidden = True)
-def init(reference, output, samples, simple):
+def init(output, reference, samples, simple):
     """
     Initialize a configured loco-pipe project
 
-    Create a directory (--output) with all the components loco-pipe needs to run. Must include
-    a `--reference` file. Provide the input BAM files and/or directories at the end of the command
-    as individual files/folders, using shell wildcards (e.g. `data/acro*.bam`), or both.
+    Create an OUTPUT directory with all the components loco-pipe needs to run. Provide a REFERENCE
+    FASTA file that was used to create the alignment files. Provide the input BAM files and/or
+    directories at the end of the command as individual files/folders, using shell wildcards (e.g. `data/acro*.bam`), or both.
     """
     os.makedirs(os.path.join(output, "docs"), exist_ok=True)
     notices = []
@@ -58,15 +58,12 @@ def init(reference, output, samples, simple):
             sampletable = "samples.tsv",
             chromtable = "contigs.tsv"
         )
-        if simple:
-            _cnf = []
-            for i in cnf.splitlines():
-                _line = i.rstrip()
-                if not _line or i.startswith("  #") or i.startswith("#"):
-                    continue    
-                _cnf.append(i.rstrip())
-            cnf = "\n".join(_cnf)
-        cnfg.write(cnf + "\n")
+        if not simple:
+            cnfg.write(cnf + "\n")
+        else:
+            for line in cnf.splitlines():
+                if line.strip() and '#' not in line:  
+                  cnfg.write(line + '\n')
     
     try:
         with open(reference, 'r') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
@@ -97,7 +94,7 @@ def init(reference, output, samples, simple):
             tb.write(f"{_name}\t{i}\tgroupname\n")
     
     notices.append(
-        f"- Samples have all been assigned to a single group and need to have distinct classifications in {os.path.join(output, 'docs', 'samples.tsv')}."
+        f'- \033[92m{os.path.join(os.path.relpath(output), 'docs', 'samples.tsv')}\033[0m: samples have all been assigned to a single group and need to have distinct classifications.'
     )
 
     print("Notice:\n" + "\n".join(notices), file = sys.stderr)
@@ -116,10 +113,6 @@ def start(directory, threads, dry):
     loco-pipe. Will print snakemake output to the terminal.
     """
     prjdir = os.path.join(os.path.relpath("workflow"), "pipelines", "loco-pipe.smk")
-    #absent = valid_dir(directory)
-    #if absent:
-    #    print("Error: target directory is missing necessary loco-pipe files:\n" + "\n".join(absent), file = sys.stderr)
-    #    sys.exit(1)
     cmd = ['snakemake', '--cores', f"{threads}"]
     cmd += ["--snakefile", prjdir]
     cmd += ["--configfile", os.path.join(os.path.relpath(directory), "locopipe.yaml")]

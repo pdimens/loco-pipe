@@ -41,7 +41,12 @@ pip install . -e
 
 2. Initialize an output directory
 ```bash
-loco-pipe init -o toytest -r toyfish/reference/toy_refgen.fa toyfish/bams/
+# usage
+loco-pipe init OUTPUT_DIR REFERENCE.FASTA BAM_FILES...
+```
+
+```bash
+loco-pipe init toytest toyfish/reference/toy_refgen.fa toyfish/bams/
 ```
 
 3. Run loco-pipe
@@ -198,7 +203,7 @@ as a black box can lead to spurious results and erroneous conclusions.**
     yet available on conda. Please install it to a conda environment
     named `lostruct_lcpipe` using the script below.
 
-    ``` bash
+    ```bash
     # create a conda environment named lostruct_lcpipe and install R and some key R packages
     conda env create -f $SOFTWARE_DIR/loco-pipe/workflow/envs/lostruct.yaml
     # activate the lostruct conda environment
@@ -217,9 +222,11 @@ as a black box can lead to spurious results and erroneous conclusions.**
     is properly installed to the `lostruct_lcpipe` environment with
     something like the following
 
-    ``` r
-    withr::with_libpaths(new = "/path/to/conda/envs/lostruct_lcpipe/lib/R/library",
-                         devtools::install_github("petrelharp/local_pca/lostruct"))
+    ```r
+    withr::with_libpaths(
+      new = "/path/to/conda/envs/lostruct_lcpipe/lib/R/library",
+      devtools::install_github("petrelharp/local_pca/lostruct")
+    )
     ```
 
 ## Preparing the project directory and required input files
@@ -253,14 +260,6 @@ as a black box can lead to spurious results and erroneous conclusions.**
       etc. You will need to enter the name of the third column into the
       pipeline configuration file `config.yaml`. Below is an example of
       a sample table.
-
-          ## Warning: package 'tidyr' was built under R version 4.2.3
-
-          ## Warning: package 'readr' was built under R version 4.2.3
-
-          ## Warning: package 'dplyr' was built under R version 4.2.3
-
-          ## Warning: package 'stringr' was built under R version 4.2.3
 
       | sample_name | bam                                             | species   | population  |
       |:------------|:------------------------------------------------|:----------|:------------|
