@@ -42,16 +42,16 @@ pip install . -e
 2. Initialize an output directory
 ```bash
 # usage
-loco-pipe init OUTPUT_DIR REFERENCE.FASTA BAM_FILES...
+loco-init OUTPUT_DIR REFERENCE.FASTA BAM_FILES...
 ```
 
 ```bash
-loco-pipe init toytest toyfish/reference/toy_refgen.fa toyfish/bams/
+loco-init toytest toyfish/reference/toy_refgen.fa toyfish/bams/
 ```
 
 3. Run loco-pipe
 ```bash
-loco-pipe start toytest
+loco-pipe -t 25 toytest
 ```
 
 Use `--help` to see the command docstrings.

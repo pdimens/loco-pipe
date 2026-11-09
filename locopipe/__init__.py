@@ -10,11 +10,6 @@ import yaml
 from locopipe.workflow import CONFIG
 from locopipe.validation import BAMfile
 
-@click.help_option('--help', hidden = True)
-@click.group()
-def cli():
-    """Convenience features to make loco-pipe friendlier"""
-
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
 @click.option('-s', '--simple', is_flag = True, default = False, show_default = True, help = 'Do not annotate the workflow YAML file')
 @click.option('--hpc', type = click.Choice(['slurm', 'lsf', 'sge'], case_sensitive=False), help = 'Include an HPC profile for this scheduler')
@@ -110,7 +105,7 @@ def init(output, reference, samples, simple, hpc):
     print("Notice:\n" + "\n".join(notices), file = sys.stderr)
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
-@click.option('-@', '--threads', default = 8, show_default = True, type = click.IntRange(1,999, clamp = True), help = 'Number of threads to use')
+@click.option('-t', '--threads', default = 8, show_default = True, type = click.IntRange(1,999, clamp = True), help = 'Number of threads to use')
 @click.option('-d', '--dry', is_flag = True, default = False, show_default = True, help = 'Perform a snakemake dry run')
 @click.argument("directory", default = ".", type = click.Path(exists=True, file_okay=False, readable=True))
 @click.help_option('--help', hidden = True)
@@ -134,6 +129,3 @@ def start(directory, threads, dry):
         subprocess.run(cmd)
     except KeyboardInterrupt:
         pass
-
-cli.add_command(start)
-cli.add_command(init)

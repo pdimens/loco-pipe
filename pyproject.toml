@@ -18,7 +18,8 @@ dependencies = [
 ]
 
 [project.scripts]
-loco-pipe = "locopipe.__init__:cli"
+loco-init = "locopipe.__init__:init"
+loco-pipe = "locopipe.__init__:start"
 
 
 [project.urls]
