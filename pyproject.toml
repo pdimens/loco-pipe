@@ -44,4 +44,5 @@ locopipe = { path = ".", editable = true }
 click = ">=8.2,<9"
 numpy = ">=2.4.2,<3"
 pandas = ">=3.0,<4"
+python = ">=3.11"
 snakemake-minimal = ">=9.19.0,<10"
