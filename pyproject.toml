@@ -11,10 +11,10 @@ requires-python = ">=3.11"
 readme = {file = "README.md", content-type = "text/markdown"}
 license = "GPL-3.0-or-later"
 dependencies = [
-    'click>8.1',
-    'snakemake>=9.0,<10',
+    'click>=8.2,<9.0',
+    'snakemake>=9.19,<10',
     'numpy>=2.4.2',
-    'pandas>=3.0.1',
+    'pandas>=3.0',
 ]
 
 [project.scripts]
@@ -41,7 +41,7 @@ locopipe = { path = ".", editable = true }
 [tool.pixi.tasks]
 
 [tool.pixi.dependencies]
-click = ">8.1,<9"
+click = ">=8.2,<9"
 numpy = ">=2.4.2,<3"
-pandas = ">=3.0.1,<4"
-snakemake = ">=9.0,<10"
+pandas = ">=3.0,<4"
+snakemake-minimal = ">=9.19.0,<10"
