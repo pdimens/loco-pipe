@@ -26,9 +26,10 @@ def init(output, reference, samples, simple, hpc):
     directories at the end of the command as individual files/folders, using shell wildcards (e.g. `data/acro*.bam`), or both.
     """
     os.makedirs(os.path.join(output, "docs"), exist_ok=True)
+    os.makedirs(os.path.join(output, "workflow"), exist_ok=True)
     notices = []
     shutil.copytree(
-        resources.files('locopipe.workflow').as_posix(), "workflow",
+        resources.files('locopipe.workflow').as_posix(), f"{output}/workflow",
         dirs_exist_ok=True,
         ignore = shutil.ignore_patterns('*__init__.py', '*__pycache__', 'profiles')    
     )
@@ -51,14 +52,14 @@ def init(output, reference, samples, simple, hpc):
         profile = profile | _hpc
         notices.append(f'- using the {hpc} scheduler requires \033[92msnakemake-executor-plugin-{hpc}\033[0m to be installed')
 
-    with open(os.path.join("workflow", 'profile.yaml'), "w", encoding="utf-8") as sm_config:
+    with open(os.path.join(output, 'workflow', 'profile.yaml'), "w", encoding="utf-8") as sm_config:
         yaml.dump(profile, sm_config, sort_keys=False)
 
-    with open(os.path.join(output, "locopipe.yaml"), 'w') as cnfg:
+    with open(os.path.join(output, 'workflow', "locopipe.yaml"), 'w') as cnfg:
         cnf = CONFIG.format(
             basedir = os.path.abspath(output),
             reference = os.path.abspath(reference),
-            scriptdir = os.path.abspath("workflow/scripts"),
+            scriptdir = os.path.abspath(f"{output}/workflow/scripts"),
             groupcol = "population",
             sampletable = "samples.tsv",
             chromtable = "contigs.tsv"
@@ -117,11 +118,12 @@ def start(directory, threads, dry):
     Make sure you have addressed any notices provided by the init command prior to launching
     loco-pipe. Will print snakemake output to the terminal.
     """
-    prjdir = os.path.join(os.path.relpath("workflow"), "pipelines", "loco-pipe.smk")
+    workflowdir = os.path.relpath(os.path.join(directory, 'workflow'))
+    snakefile = os.path.join(workflowdir, "pipelines", "loco-pipe.smk")
     cmd = ['snakemake', '--cores', f"{threads}"]
-    cmd += ["--snakefile", prjdir]
-    cmd += ["--configfile", os.path.join(os.path.relpath(directory), "locopipe.yaml")]
-    cmd += ["--profile", os.path.relpath("workflow/profile.yaml")]
+    cmd += ["--snakefile", snakefile]
+    cmd += ["--configfile", os.path.join(workflowdir, "locopipe.yaml")]
+    cmd += ["--profile", os.path.join(workflowdir, 'profile.yaml')]
     if dry:
         cmd += ["-n"]
     print("Starting loco-pipe...")

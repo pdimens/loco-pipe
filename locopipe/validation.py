@@ -44,7 +44,7 @@ class BAMfile(click.ParamType):
 
 
 LOCOFILES = [
-    'config.yaml',
+    'profile.yaml',
     'locopipe.yaml',
     'docs/contigs.tsv',
     'docs/samples.tsv',
