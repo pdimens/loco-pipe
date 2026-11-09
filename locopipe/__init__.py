@@ -17,11 +17,12 @@ def cli():
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
 @click.option('-s', '--simple', is_flag = True, default = False, show_default = True, help = 'Do not annotate the workflow YAML file')
+@click.option('--hpc', type = click.Choice(['slurm', 'lsf', 'sge'], case_sensitive=False), help = 'Include an HPC profile for this scheduler')
 @click.argument('output', type = click.Path(exists = False, resolve_path = True), required = True)
 @click.argument('reference', required = True, type = click.Path(exists=True, dir_okay=False, readable=True))
 @click.argument("samples", nargs = -1, required = True, type = BAMfile())
 @click.help_option('--help', hidden = True)
-def init(output, reference, samples, simple):
+def init(output, reference, samples, simple, hpc):
     """
     Initialize a configured loco-pipe project
 
@@ -34,9 +35,10 @@ def init(output, reference, samples, simple):
     shutil.copytree(
         resources.files('locopipe.workflow').as_posix(), "workflow",
         dirs_exist_ok=True,
-        ignore = shutil.ignore_patterns('*__init__.py', '*__pycache__')    
+        ignore = shutil.ignore_patterns('*__init__.py', '*__pycache__', 'profiles')    
     )
     profile = {
+        **({'__use_yte__': True} if hpc else {}),
         "directory": os.path.abspath(output),
         "rerun-incomplete": True,
         "show-failed-logs": True,
@@ -46,7 +48,15 @@ def init(output, reference, samples, simple):
         "software-deployment-method": "conda",
         "conda-cleanup-pkgs": "cache"
     }
-    with open(os.path.join("workflow", 'config.yaml'), "w", encoding="utf-8") as sm_config:
+    if hpc:
+        _hpcyaml = resources.files("locopipe.workflow.profiles") / f'{hpc.lower()}.yml'
+        with open(_hpcyaml) as f:
+            _hpc = yaml.full_load(f)
+        # merge the dicts
+        profile = profile | _hpc
+        notices.append(f'- using the {hpc} scheduler requires \033[92msnakemake-executor-plugin-{hpc}\033[0m to be installed')
+
+    with open(os.path.join("workflow", 'profile.yaml'), "w", encoding="utf-8") as sm_config:
         yaml.dump(profile, sm_config, sort_keys=False)
 
     with open(os.path.join(output, "locopipe.yaml"), 'w') as cnfg:
@@ -116,10 +126,10 @@ def start(directory, threads, dry):
     cmd = ['snakemake', '--cores', f"{threads}"]
     cmd += ["--snakefile", prjdir]
     cmd += ["--configfile", os.path.join(os.path.relpath(directory), "locopipe.yaml")]
-    cmd += ["--profile", os.path.relpath("workflow")]
+    cmd += ["--profile", os.path.relpath("workflow/profile.yaml")]
     if dry:
         cmd += ["-n"]
-    print("Snakemake command:\n" + " ".join(cmd))
+    print("Starting loco-pipe...")
     try:
         subprocess.run(cmd)
     except KeyboardInterrupt:
