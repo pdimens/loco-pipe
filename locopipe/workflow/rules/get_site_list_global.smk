@@ -4,11 +4,11 @@
 # A detailed explanation on "-sites" flag could be found on this webpage: http://www.popgen.dk/angsd/index.php/Sites.
 rule get_site_list_global:
     input: 
-        depth_filter = "{basedir}/angsd/get_depth_global/depth_filter.tsv",
-        pos = "{basedir}/angsd/get_depth_global/{chr}.pos.gz",
+        depth_filter = "angsd/get_depth_global/depth_filter.tsv",
+        pos = "angsd/get_depth_global/{chr}.pos.gz",
     output:
-        site_list = "{basedir}/angsd/get_depth_global/{chr}.site_list",
-        site_list_idx = "{basedir}/angsd/get_depth_global/{chr}.site_list.idx"
+        site_list = "angsd/get_depth_global/{chr}.site_list",
+        site_list_idx = "angsd/get_depth_global/{chr}.site_list.idx"
     conda: "../envs/angsd.yaml"
     threads: 1
     shell:
@@ -24,10 +24,10 @@ rule get_site_list_global:
 # of all chromosomes into one file. Then, similar to above, ANGSD is used to index the site list.
 rule combine_site_list_global:
     input: 
-        expand("{{basedir}}/angsd/get_depth_global/{chr}.site_list", chr = CHRS)
+        expand("angsd/get_depth_global/{chr}.site_list", chr = CHRS)
     output:
-        site_list = "{basedir}/angsd/get_depth_global/combined.site_list",
-        site_list_idx = "{basedir}/angsd/get_depth_global/combined.site_list.idx"
+        site_list = "angsd/get_depth_global/combined.site_list",
+        site_list_idx = "angsd/get_depth_global/combined.site_list.idx"
     threads: 1
     conda: "../envs/angsd.yaml"
     shell:

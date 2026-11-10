@@ -4,19 +4,19 @@ rule get_fst:
     input:
         ref = REFERENCE,
         fai = REFERENCE+".fai",
-        saf1 = "{basedir}/angsd/get_maf/{population1}.{chr}.saf.idx",
-        saf2 = "{basedir}/angsd/get_maf/{population2}.{chr}.saf.idx",
+        saf1 = "angsd/get_maf/{population1}.{chr}.saf.idx",
+        saf2 = "angsd/get_maf/{population2}.{chr}.saf.idx",
     output:
-        expand("{{basedir}}/angsd/get_fst/{{population1}}.{{population2}}.{{chr}}.{ext}",
+        expand("angsd/get_fst/{{population1}}.{{population2}}.{{chr}}.{ext}",
                ext = [ "2dSFS", "alpha_beta.txt", "alpha_beta.fst.idx", "alpha_beta.fst.gz", "average_fst.txt" ]),
-        touch("{basedir}/angsd/get_fst/{population1}.{population2}.{chr}.done"),
+        touch("angsd/get_fst/{population1}.{population2}.{chr}.done"),
     threads: THREADS
     params:
-        outdir = "{basedir}/angsd/get_fst",
+        outdir = "angsd/get_fst",
         ref_type = config["ref_type"],
-        outbase = "{basedir}/angsd/get_fst/{population1}.{population2}.{chr}",
+        outbase = "angsd/get_fst/{population1}.{population2}.{chr}",
         extra = config["get_fst"]["extra"],
-    log: "{basedir}/angsd/get_fst/{population1}.{population2}.{chr}.log"
+    log: "angsd/get_fst/{population1}.{population2}.{chr}.log"
     conda: "../envs/angsd.yaml"
     shell:
         '''
@@ -33,11 +33,11 @@ rule get_fst:
 
 rule plot_fst:
     input: 
-        fst = expand("{{basedir}}/angsd/get_fst/{{population1}}.{{population2}}.{chr}.done", chr = CHRS),
+        fst = expand("angsd/get_fst/{{population1}}.{{population2}}.{chr}.done", chr = CHRS),
         chr_table = CHR_TABLE_PATH,
     output: 
-        png = "{basedir}/figures/fst/{population1}.{population2}.png",
-        done = touch("{basedir}/figures/fst/{population1}.{population2}.done"),
+        png = "figures/fst/{population1}.{population2}.png",
+        done = touch("figures/fst/{population1}.{population2}.done"),
     threads: 4
     params:
         rscript = config["scriptdir"] + "/plot_fst.R",
@@ -45,7 +45,7 @@ rule plot_fst:
         bp_window_size = config["get_fst"]["bp_window_size"],
         fig_height = config["get_fst"]["fig_height"],
         fig_width = config["get_fst"]["fig_width"],
-    log: "{basedir}/figures/fst/{population1}.{population2}.log"
+    log: "figures/fst/{population1}.{population2}.log"
     conda: "../envs/r.yaml"
     shell:
         '''

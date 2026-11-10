@@ -12,17 +12,17 @@ rule snp_calling_global:
     input:
         ref = REFERENCE,
         fai = REFERENCE + ".fai",
-        bamlist = "{basedir}/workflow/" + BAMLIST,
+        bamlist = "workflow/" + BAMLIST,
         bai = get_input_bai(ALL_BAMS),
-        depth_filter = "{basedir}/angsd/get_depth_global/depth_filter.tsv"
+        depth_filter = "angsd/get_depth_global/depth_filter.tsv"
     output:
-        expand("{{basedir}}/angsd/snp_calling_global/{{chr}}.{ext}",
+        expand("angsd/snp_calling_global/{{chr}}.{ext}",
                ext = [ "arg", "beagle.gz", "covMat", "depthGlobal", "depthSample", "ibs.gz", "ibsMat", "mafs.gz", "pos.gz", "snp_list", "snp_list.idx", "snp_list.bin" ]),
-        touch("{basedir}/angsd/snp_calling_global/{chr}.done")
+        touch("angsd/snp_calling_global/{chr}.done")
     threads:
         8
     params:
-        outdir = "{basedir}/angsd/snp_calling_global",
+        outdir = "angsd/snp_calling_global",
         gl_model = config["gl_model"],
         minq = MINQ,
         minmapq = MINMAPQ,
@@ -31,7 +31,7 @@ rule snp_calling_global:
         minmaf = MINMAF,
         pval = config["snp_calling_global"]["pval"],
         extra = config["snp_calling_global"]["extra"]
-    log: "{basedir}/angsd/snp_calling_global/{chr}.log"
+    log: "angsd/snp_calling_global/{chr}.log"
     conda: "../envs/angsd.yaml"
     shell:
         '''

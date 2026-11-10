@@ -1,11 +1,11 @@
 # This rule splits chromosome-level beagle formatted genotype likelihoods into windows with fixed number of SNPs
 rule split_beagle_global:
     input:
-        beagle="{basedir}/angsd/snp_calling_global/{chr}.beagle.gz",
+        beagle="angsd/snp_calling_global/{chr}.beagle.gz",
     output:
-        done=touch("{basedir}/lostruct/global/split_beagle/{chr}.done"),
+        done=touch("lostruct/global/split_beagle/{chr}.done"),
     params:
-        outdir="{basedir}/lostruct/global/split_beagle",
+        outdir="lostruct/global/split_beagle",
         snp_window_size=config["lostruct"]["snp_window_size"],
     threads: 8
     shell:
@@ -22,19 +22,19 @@ rule split_beagle_global:
         '''
 
 # This rule runs PCAngsd at each window
-rule run_pcangsd_in_windows_global:
+rule pcangsd_in_windows_global:
     input:
-        done="{basedir}/lostruct/global/split_beagle/{chr}.done",
+        done="lostruct/global/split_beagle/{chr}.done",
     output:
-        done=touch("{basedir}/lostruct/global/run_pcangsd_in_windows/{chr}.done"),
+        done=touch("lostruct/global/run_pcangsd_in_windows/{chr}.done"),
     params:
-        indir="{basedir}/lostruct/global/split_beagle",
-        outdir="{basedir}/lostruct/global/run_pcangsd_in_windows",
+        indir="lostruct/global/split_beagle",
+        outdir="lostruct/global/run_pcangsd_in_windows",
         snp_window_size=config["lostruct"]["snp_window_size"],
         ## note that this will make the number of SNPs in each window different. if we want to keep the number of SNPs consistent, we'll need to stick with the minmaf filter used when generating the beagle file
         minmaf=MINMAF,
     threads: THREADS
-    log: "{basedir}/lostruct/global/run_pcangsd_in_windows/{chr}.log"
+    log: "lostruct/global/run_pcangsd_in_windows/{chr}.log"
     conda:
         "../envs/pcangsd.yaml" 
     shell:
@@ -59,19 +59,19 @@ rule run_pcangsd_in_windows_global:
 # This rule summarizes PCA results at each window as required by the lostruct package
 rule summarize_pcangsd_for_lostruct_global:
     input:
-        done="{basedir}/lostruct/global/run_pcangsd_in_windows/{chr}.done",
+        done="lostruct/global/run_pcangsd_in_windows/{chr}.done",
     output:
-        pca_summary="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct/{chr}.pca_summary.tsv",
-        snp_position="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct/{chr}.snp_position.tsv",
-        done=touch("{basedir}/lostruct/global/summarize_pcangsd_for_lostruct/{chr}.done"),
+        pca_summary="lostruct/global/summarize_pcangsd_for_lostruct/{chr}.pca_summary.tsv",
+        snp_position="lostruct/global/summarize_pcangsd_for_lostruct/{chr}.snp_position.tsv",
+        done=touch("lostruct/global/summarize_pcangsd_for_lostruct/{chr}.done"),
     params:
-        outdir="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct",
-        cov_dir="{basedir}/lostruct/global/run_pcangsd_in_windows",
-        beagle_dir="{basedir}/lostruct/global/split_beagle",
+        outdir="lostruct/global/summarize_pcangsd_for_lostruct",
+        cov_dir="lostruct/global/run_pcangsd_in_windows",
+        beagle_dir="lostruct/global/split_beagle",
         rscript=config["scriptdir"] + "/summarize_pcangsd_for_lostruct.R",
         pc=config["lostruct"]["pc"],
     threads: 8
-    log: "{basedir}/lostruct/global/summarize_pcangsd_for_lostruct/{chr}.log"
+    log: "lostruct/global/summarize_pcangsd_for_lostruct/{chr}.log"
     conda:
         "lostruct_lcpipe"  ## lostruct isn't available on conda. we'll need to set up a conda environment with lostruct beforehand
     shell:
@@ -85,25 +85,25 @@ rule summarize_pcangsd_for_lostruct_global:
         '''
 
 # This rule runs the lostruct package using PCA summaries as input and outputs a distance matrix, which describes the dissimilarity between windows
-rule run_lostruct_global:
+rule lostruct_global:
     input:
-        done=expand("{{basedir}}/lostruct/global/summarize_pcangsd_for_lostruct/{chr}.done", chr=CHRS),
+        done=expand("lostruct/global/summarize_pcangsd_for_lostruct/{chr}.done", chr=CHRS),
     output:
-        dist="{basedir}/lostruct/global/run_lostruct/combined.dist.tsv",
-        mds="{basedir}/lostruct/global/run_lostruct/combined.mds.tsv",
-        proportion_variance="{basedir}/lostruct/global/run_lostruct/combined.proportion_variance.txt",
-        mds_by_chr=expand("{{basedir}}/lostruct/global/run_lostruct/{chr}.mds.tsv", chr=CHRS),
-        proportion_variance_by_chr=expand("{{basedir}}/lostruct/global/run_lostruct/{chr}.proportion_variance.txt", chr=CHRS),
-        done=touch("{basedir}/lostruct/global/run_lostruct/run_lostruct.done"),
+        dist="lostruct/global/run_lostruct/combined.dist.tsv",
+        mds="lostruct/global/run_lostruct/combined.mds.tsv",
+        proportion_variance="lostruct/global/run_lostruct/combined.proportion_variance.txt",
+        mds_by_chr=expand("lostruct/global/run_lostruct/{chr}.mds.tsv", chr=CHRS),
+        proportion_variance_by_chr=expand("lostruct/global/run_lostruct/{chr}.proportion_variance.txt", chr=CHRS),
+        done=touch("lostruct/global/run_lostruct/run_lostruct.done"),
     params:
         rscript=config["scriptdir"] + "/run_lostruct.R",
-        chr_table_path=BASEDIR + "/workflow/" + config["chr_table"],
+        chr_table_path="workflow/" + config["chr_table"],
         pc=config["lostruct"]["pc"],
         k=config["lostruct"]["k"],
-        indir="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct",
-        outdir="{basedir}/lostruct/global/run_lostruct",
+        indir="lostruct/global/summarize_pcangsd_for_lostruct",
+        outdir="lostruct/global/run_lostruct",
     threads: THREADS
-    log: "{basedir}/lostruct/global/run_lostruct/run_lostruct.log"
+    log: "lostruct/global/run_lostruct/run_lostruct.log"
     conda:
         "lostruct_lcpipe"  ## lostruct isn't available on conda. we'll need to set up a conda environment with lostruct beforehand
     shell:
@@ -116,25 +116,25 @@ rule run_lostruct_global:
 # This rule plots the top MDS axes and saves the outlier windows in text files
 rule plot_lostruct_mds_global:
     input:
-        done="{basedir}/lostruct/global/run_lostruct/run_lostruct.done",
+        done="lostruct/global/run_lostruct/run_lostruct.done",
     output:
-        combined_table="{basedir}/lostruct/global/plot_lostruct_mds/combined.mds.csv",
-        combined_plot="{basedir}/figures/lostruct/global/combined.mds.png",
-        separated_table="{basedir}/lostruct/global/plot_lostruct_mds/separated.mds.csv",
-        separated_plot="{basedir}/figures/lostruct/global/separated.mds.png",
-        done=touch("{basedir}/figures/lostruct/global/plot_lostruct_mds.done"),
+        combined_table="lostruct/global/plot_lostruct_mds/combined.mds.csv",
+        combined_plot="figures/lostruct/global/combined.mds.png",
+        separated_table="lostruct/global/plot_lostruct_mds/separated.mds.csv",
+        separated_plot="figures/lostruct/global/separated.mds.png",
+        done=touch("figures/lostruct/global/plot_lostruct_mds.done"),
     params:
         rscript=config["scriptdir"] + "/plot_lostruct_mds.R",
-        chr_table_path=BASEDIR + "/workflow/" + config["chr_table"],
-        indir="{basedir}/lostruct/global/run_lostruct",
-        outdir="{basedir}/lostruct/global/plot_lostruct_mds",
-        plot_dir="{basedir}/figures/lostruct/global",
+        chr_table_path="workflow/" + config["chr_table"],
+        indir="lostruct/global/run_lostruct",
+        outdir="lostruct/global/plot_lostruct_mds",
+        plot_dir="figures/lostruct/global",
         k=config["lostruct"]["k"],
         z_cutoff=config["lostruct"]["z_cutoff"],
         fig_width=config["lostruct"]["fig_width"],
         fig_height=config["lostruct"]["fig_height"],
     threads: 4
-    log: "{basedir}/lostruct/global/plot_lostruct_mds/plot_lostruct_mds.log"
+    log: "lostruct/global/plot_lostruct_mds/plot_lostruct_mds.log"
     conda:
         "lostruct_lcpipe"  ## lostruct isn't available on conda. we'll need to set up a conda environment with lostruct beforehand
     shell:
@@ -146,18 +146,18 @@ rule plot_lostruct_mds_global:
         '''
 
 # This rule combines outlier windows along the same MDS axis and performs a concensus PCA with PCAngsd
-rule run_pcangsd_with_lostruct_outliers_global:
+rule pcangsd_with_lostruct_outliers_global:
     input:
-        done="{basedir}/figures/lostruct/global/plot_lostruct_mds.done",
+        done="figures/lostruct/global/plot_lostruct_mds.done",
     output:
-        done=touch("{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.done"),
+        done=touch("lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.done"),
     params:
-        indir="{basedir}/lostruct/global/plot_lostruct_mds",
-        outdir="{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers",
-        beagle_dir="{basedir}/lostruct/global/split_beagle",
+        indir="lostruct/global/plot_lostruct_mds",
+        outdir="lostruct/global/run_pcangsd_with_lostruct_outliers",
+        beagle_dir="lostruct/global/split_beagle",
         minmaf=MINMAF,
     threads: THREADS
-    log: "{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.log"
+    log: "lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.log"
     conda:
         "../envs/pcangsd.yaml" 
     shell:
@@ -192,24 +192,24 @@ rule run_pcangsd_with_lostruct_outliers_global:
 # This rule plots the result of the outlier windows' concensus PCA
 rule plot_lostruct_outlier_pca_global:
     input:
-        done="{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.done",
+        done="lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.done",
     output:
-        combined_table="{basedir}/lostruct/global/plot_lostruct_outlier_pca/combined.pca.tsv",
-        combined_plot="{basedir}/figures/lostruct/global/combined.pca.png",
-        separated_table="{basedir}/lostruct/global/plot_lostruct_outlier_pca/separated.pca.tsv",
-        separated_plot="{basedir}/figures/lostruct/global/separated.pca.pdf",
-        done=touch("{basedir}/figures/lostruct/global/plot_lostruct_outlier_pca.done"),
+        combined_table="lostruct/global/plot_lostruct_outlier_pca/combined.pca.tsv",
+        combined_plot="figures/lostruct/global/combined.pca.png",
+        separated_table="lostruct/global/plot_lostruct_outlier_pca/separated.pca.tsv",
+        separated_plot="figures/lostruct/global/separated.pca.pdf",
+        done=touch("figures/lostruct/global/plot_lostruct_outlier_pca.done"),
     params:
-        outdir="{basedir}/lostruct/global/plot_lostruct_outlier_pca",
+        outdir="lostruct/global/plot_lostruct_outlier_pca",
         rscript=config["scriptdir"] + "/plot_lostruct_outlier_pca.R",
-        cov_dir="{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers",
-        plot_dir="{basedir}/figures/lostruct/global",
-        sample_table_path="{basedir}/workflow/" + config["sample_table"],
+        cov_dir="lostruct/global/run_pcangsd_with_lostruct_outliers",
+        plot_dir="figures/lostruct/global",
+        sample_table_path="workflow/" + config["sample_table"],
         color_by=POP_L1_COL,
-        chr_table_path=BASEDIR + "/workflow/" + config["chr_table"],
+        chr_table_path="workflow/" + config["chr_table"],
         k=config["lostruct"]["k"],
     threads: 4
-    log: "{basedir}/lostruct/global/plot_lostruct_outlier_pca/plot_lostruct_outlier_pca.log"
+    log: "lostruct/global/plot_lostruct_outlier_pca/plot_lostruct_outlier_pca.log"
     conda:
         "lostruct_lcpipe"  ## lostruct isn't available on conda. we'll need to set up a conda environment with lostruct beforehand
     shell:

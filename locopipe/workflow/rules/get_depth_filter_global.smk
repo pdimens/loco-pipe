@@ -4,19 +4,19 @@
 # This rule outputs a density plot along with a tsv file on read depth distribution and min&max filter.
 
 rule get_depth_filter_global:
-    input: expand("{{basedir}}/angsd/get_depth_global/{chr}.depthGlobal", chr = CHRS)
+    input: expand("angsd/get_depth_global/{chr}.depthGlobal", chr = CHRS)
     output: 
-        "{basedir}/angsd/get_depth_global/depth_filter.tsv",
-        "{basedir}/angsd/get_depth_global/depth_histogram.tsv",
-        "{basedir}/figures/depth/depth_filter.png"
+        "angsd/get_depth_global/depth_filter.tsv",
+        "angsd/get_depth_global/depth_histogram.tsv",
+        "figures/depth/depth_filter.png"
     threads: 4
     params:
-        indir = "{basedir}/angsd/get_depth_global/",
-        plot_dir = "{basedir}/figures/depth/",
+        indir = "angsd/get_depth_global/",
+        plot_dir = "figures/depth/",
         chr_list = CHR_TABLE_PATH,
         n_sd = config["get_depth_filter_global"]["n_sd"],
         rscript = config["scriptdir"] + "/get_depth_filter.R"
-    log: "{basedir}/angsd/get_depth_global/get_depth_filter.log"
+    log: "angsd/get_depth_global/get_depth_filter.log"
     conda: "../envs/r.yaml"
     shell:
         '''
