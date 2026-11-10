@@ -4,19 +4,19 @@
 # (i.e. combined.subsetted.snp_list.idx).  
 rule combine_snp_list_global:
     input: 
-        snp_list = expand("{{basedir}}/angsd/snp_calling_global/{chr}.snp_list", chr = CHRS),
-        subsetted_snp_list = expand("{{basedir}}/angsd/snp_calling_global/{chr}.subsetted.snp_list", chr = CHRS),
+        snp_list = expand("angsd/snp_calling_global/{chr}.snp_list", chr = CHRS),
+        subsetted_snp_list = expand("angsd/snp_calling_global/{chr}.subsetted.snp_list", chr = CHRS),
     output:
-        snp_list = "{basedir}/angsd/snp_calling_global/combined.snp_list",
-        snp_list_idx = "{basedir}/angsd/snp_calling_global/combined.snp_list.idx",
-        snp_list_bin = "{basedir}/angsd/snp_calling_global/combined.snp_list.bin",
-        subsetted_snp_list = "{basedir}/angsd/snp_calling_global/combined.subsetted.snp_list",
-        subsetted_snp_list_idx = "{basedir}/angsd/snp_calling_global/combined.subsetted.snp_list.idx",
-        subsetted_snp_list_bin = "{basedir}/angsd/snp_calling_global/combined.subsetted.snp_list.bin",
-        done = touch("{basedir}/angsd/snp_calling_global/combined.subsetted.snp_list.done"),
+        snp_list = "angsd/snp_calling_global/combined.snp_list",
+        snp_list_idx = "angsd/snp_calling_global/combined.snp_list.idx",
+        snp_list_bin = "angsd/snp_calling_global/combined.snp_list.bin",
+        subsetted_snp_list = "angsd/snp_calling_global/combined.subsetted.snp_list",
+        subsetted_snp_list_idx = "angsd/snp_calling_global/combined.subsetted.snp_list.idx",
+        subsetted_snp_list_bin = "angsd/snp_calling_global/combined.subsetted.snp_list.bin",
+        done = touch("angsd/snp_calling_global/combined.subsetted.snp_list.done"),
     threads: 1
     conda: "../envs/angsd.yaml"
-    log: "{basedir}/angsd/snp_calling_global/combine_snp_list.log"
+    log: "angsd/snp_calling_global/combine_snp_list.log"
     shell:
         '''
         cat {input.snp_list} > {output.snp_list} 2> {log}
@@ -29,13 +29,13 @@ rule combine_snp_list_global:
 # chromosome into one file (i.e. subsetted.beagle), and then compresses it.
 rule combine_subsetted_beagle_global:
     input: 
-        subsetted_beagle = expand("{{basedir}}/angsd/snp_calling_global/{chr}.subsetted.beagle", chr = CHRS),
+        subsetted_beagle = expand("angsd/snp_calling_global/{chr}.subsetted.beagle", chr = CHRS),
     output:
-        subsetted_beagle = "{basedir}/angsd/snp_calling_global/combined.subsetted.beagle",
-        subsetted_beagle_gz = "{basedir}/angsd/snp_calling_global/combined.subsetted.beagle.gz",
-        done = touch("{basedir}/angsd/snp_calling_global/combined.subsetted.beagle.done"),
+        subsetted_beagle = "angsd/snp_calling_global/combined.subsetted.beagle",
+        subsetted_beagle_gz = "angsd/snp_calling_global/combined.subsetted.beagle.gz",
+        done = touch("angsd/snp_calling_global/combined.subsetted.beagle.done"),
     threads: 1
-    log: "{basedir}/angsd/snp_calling_global/combine_subsetted_beagle.log"
+    log: "angsd/snp_calling_global/combine_subsetted_beagle.log"
     shell:
         '''
         head -n 1 {input.subsetted_beagle[0]} > {output.subsetted_beagle} 2> {log}
@@ -47,14 +47,14 @@ rule combine_subsetted_beagle_global:
 # global genotype likelihood file in beagle format, it combines the population-specific beagle files.
 rule combine_subsetted_beagle_local:
     input: 
-        subsetted_beagle = expand("{{basedir}}/angsd/get_maf/{{population}}.{chr}.subsetted.beagle", chr=CHRS),
+        subsetted_beagle = expand("angsd/get_maf/{{population}}.{chr}.subsetted.beagle", chr=CHRS),
     output:
-        subsetted_beagle = "{basedir}/angsd/get_maf/{population}.combined.subsetted.beagle",
-        subsetted_beagle_site = "{basedir}/angsd/get_maf/{population}.combined.subsetted.beagle.sites",
-        subsetted_beagle_gz = "{basedir}/angsd/get_maf/{population}.combined.subsetted.beagle.gz",
-        done = touch("{basedir}/angsd/get_maf/{population}.combined.subsetted.beagle.done"),
+        subsetted_beagle = "angsd/get_maf/{population}.combined.subsetted.beagle",
+        subsetted_beagle_site = "angsd/get_maf/{population}.combined.subsetted.beagle.sites",
+        subsetted_beagle_gz = "angsd/get_maf/{population}.combined.subsetted.beagle.gz",
+        done = touch("angsd/get_maf/{population}.combined.subsetted.beagle.done"),
     threads: 1
-    log: "{basedir}/angsd/get_maf/{population}.combine_subsetted_beagle.log"
+    log: "angsd/get_maf/{population}.combine_subsetted_beagle.log"
     shell:
         '''
         head -n 1 {input.subsetted_beagle[0]} > {output.subsetted_beagle} 2> {log}
@@ -66,9 +66,9 @@ rule combine_subsetted_beagle_local:
 # This rule unzips the full beagle file for each chromosome
 rule unzip_beagle_global:
     input:
-        beagle="{basedir}/angsd/snp_calling_global/{chr}.beagle.gz",
+        beagle="angsd/snp_calling_global/{chr}.beagle.gz",
     output:
-        beagle="{basedir}/angsd/snp_calling_global/{chr}.beagle",
+        beagle="angsd/snp_calling_global/{chr}.beagle",
     threads: 1
     shell:
         '''
@@ -78,13 +78,13 @@ rule unzip_beagle_global:
 # This rule combines the beagle files from all chromosomes together
 rule combine_beagle_global:
     input:
-        beagle=expand("{{basedir}}/angsd/snp_calling_global/{chr}.beagle", chr=CHRS),
+        beagle=expand("angsd/snp_calling_global/{chr}.beagle", chr=CHRS),
     output:
-        beagle="{basedir}/angsd/snp_calling_global/combined.beagle",
-        beagle_gz="{basedir}/angsd/snp_calling_global/combined.beagle.gz",
-        done=touch("{basedir}/angsd/snp_calling_global/combined.beagle.done"),
+        beagle="angsd/snp_calling_global/combined.beagle",
+        beagle_gz="angsd/snp_calling_global/combined.beagle.gz",
+        done=touch("angsd/snp_calling_global/combined.beagle.done"),
     threads: 1
-    log: "{basedir}/angsd/snp_calling_global/combine_beagle.log"
+    log: "angsd/snp_calling_global/combine_beagle.log"
     shell:
         '''
         head -n 1 {input.beagle[0]} > {output.beagle} 2> {log}

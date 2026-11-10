@@ -25,7 +25,7 @@ rule get_bamlist_global:
   input: 
     tsv_file = SAMPLE_TABLE_PATH
   output: 
-    txt_file = "{basedir}/workflow/"+BAMLIST
+    txt_file = "workflow/"+BAMLIST
   params:
     filename = BAMLIST,
     basedir = BASEDIR
@@ -41,7 +41,7 @@ rule get_bamlist_local:
     grouping = POP_L1_COLNAME,
     filename = BAMLIST
   output: 
-    txt_file = expand("{{basedir}}/workflow/{population}_"+ BAMLIST, population = POP_L1)
+    txt_file = expand("workflow/{population}_"+ BAMLIST, population = POP_L1)
   run:
     extract_each_bam_column_to_txt(input.tsv_file, "\t", params.grouping, params.basedir, params.filename)
 
@@ -61,9 +61,9 @@ rule index_bam:
 # restrict analyses to a predetermined set of chromosomes for certain analyses (e.g. heterozygosity estimation)
 rule get_chr_list:
   input: 
-      chr_table = "{basedir}/workflow/" + config["chr_table"],
+      chr_table = "workflow/" + config["chr_table"],
   output:
-      chr_list = "{basedir}/workflow/chr_list.txt",
+      chr_list = "workflow/chr_list.txt",
   shell:
       '''
       cut -f 1 {input.chr_table} > {output.chr_list}

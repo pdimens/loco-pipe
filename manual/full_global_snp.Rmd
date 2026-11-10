@@ -65,7 +65,7 @@ This Snakefile has seven rules that run local PCA with `lostruct` and visualize 
 This rule splits chromosome-level beagle formatted genotype likelihoods into windows with fixed number of SNPs. This rule runs on each chromosome separately.
 
 * Key output files 
-  * `{basedir}/lostruct/global/split_beagle/{chr}.w*.beagle.gz`: genotype likelihood in windows in beagle format
+  * `lostruct/global/split_beagle/{chr}.w*.beagle.gz`: genotype likelihood in windows in beagle format
   
 * Customizable arguments:
   * `snp_window_size`: number of SNPs in a window. This is defaulted to be 100 and can be modified in the config file. The smaller this number is, the smaller each window is, and the more windows there will be. Having smaller windows will result in higher computational burden for the downstream, but has more power in detecting small outlier regions.

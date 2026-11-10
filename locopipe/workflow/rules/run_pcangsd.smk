@@ -1,15 +1,15 @@
 # This rule uses PCAngsd software to conduct PCA analysis on a global level. 
 # More details about PCAngsd could be found here: http://www.popgen.dk/software/index.php/PCAngsd.
 rule run_pcangsd_pca_global:
-    input: "{basedir}/angsd/snp_calling_global/{file}.beagle.gz",
+    input: "angsd/snp_calling_global/{file}.beagle.gz",
     output: 
-        cov = "{basedir}/pcangsd/global/{file}.cov",
-        done = touch("{basedir}/pcangsd/global/{file}.done"),
+        cov = "pcangsd/global/{file}.cov",
+        done = touch("pcangsd/global/{file}.done"),
     params:
-        outdir = "{basedir}/pcangsd/global",
+        outdir = "pcangsd/global",
         minmaf=MINMAF,
     threads: THREADS
-    log: "{basedir}/pcangsd/global/{file}.log"
+    log: "pcangsd/global/{file}.log"
     conda:
         "../envs/pcangsd.yaml" 
     shell:
@@ -30,15 +30,15 @@ rule run_pcangsd_pca_global:
 # This rule uses PCAngsd software to conduct PCA analysis on a local level. 
 # More details about PCAngsd could be found here: http://www.popgen.dk/software/index.php/PCAngsd.      
 rule run_pcangsd_pca_local:
-    input: "{basedir}/angsd/get_maf/{population}.{file}.beagle.gz",
+    input: "angsd/get_maf/{population}.{file}.beagle.gz",
     output: 
-        cov = "{basedir}/pcangsd/local/{population}.{file}.cov",
-        done = touch("{basedir}/pcangsd/local/{population}.{file}.done"),
+        cov = "pcangsd/local/{population}.{file}.cov",
+        done = touch("pcangsd/local/{population}.{file}.done"),
     params:
-        outdir = "{basedir}/pcangsd/local",
+        outdir = "pcangsd/local",
         minmaf = MINMAF,
     threads: THREADS
-    log: "{basedir}/pcangsd/local/{population}.{file}.log"
+    log: "pcangsd/local/{population}.{file}.log"
     conda:
         "../envs/pcangsd.yaml" 
     shell:
@@ -58,19 +58,19 @@ rule run_pcangsd_pca_local:
 # This rule plots the PCA analysis conducted in the rule,run_pcangsd_pca_global, above. 
 rule plot_pcangsd_pca_global:
     input:
-        cov = "{basedir}/pcangsd/global/{file}.cov",
-        done = "{basedir}/pcangsd/global/{file}.done",
+        cov = "pcangsd/global/{file}.cov",
+        done = "pcangsd/global/{file}.done",
     output:
-        table = "{basedir}/pcangsd/global/{file}.tsv",
-        plot = "{basedir}/figures/pcangsd/global/{file}.png",
-        done = touch("{basedir}/figures/pcangsd/global/{file}.done"),
+        table = "pcangsd/global/{file}.tsv",
+        plot = "figures/pcangsd/global/{file}.png",
+        done = touch("figures/pcangsd/global/{file}.done"),
     params:
-        outdir = "{basedir}/figures/pcangsd/global",
-        sample_table_path = "{basedir}/workflow/" + config["sample_table"],
+        outdir = "figures/pcangsd/global",
+        sample_table_path = "workflow/" + config["sample_table"],
         color_by = POP_L1_COLNAME,
         rscript = config["scriptdir"] + "/plot_pcangsd_pca.R",
     threads: 1
-    log: "{basedir}/pcangsd/global/{file}.plot.log"
+    log: "pcangsd/global/{file}.plot.log"
     conda:
         "../envs/r.yaml" 
     shell:
@@ -82,20 +82,20 @@ rule plot_pcangsd_pca_global:
 # This rule plots the PCA analysis conducted in the rule,run_pcangsd_pca_local, above. 
 rule plot_pcangsd_pca_local:
     input:
-        cov = "{basedir}/pcangsd/local/{population}.{file}.cov",
-        done = "{basedir}/pcangsd/local/{population}.{file}.done",
+        cov = "pcangsd/local/{population}.{file}.cov",
+        done = "pcangsd/local/{population}.{file}.done",
     output:
-        table = "{basedir}/pcangsd/local/{population}.{file}.tsv",
-        plot = "{basedir}/figures/pcangsd/local/{population}.{file}.png",
-        done = touch("{basedir}/figures/pcangsd/local/{population}.{file}.done"),
+        table = "pcangsd/local/{population}.{file}.tsv",
+        plot = "figures/pcangsd/local/{population}.{file}.png",
+        done = touch("figures/pcangsd/local/{population}.{file}.done"),
     params:
-        outdir = "{basedir}/figures/pcangsd/local",
-        sample_table_path = "{basedir}/workflow/" + config["sample_table"],
+        outdir = "figures/pcangsd/local",
+        sample_table_path = "workflow/" + config["sample_table"],
         color_by = POP_L1_COLNAME,
         pop_col = POP_L1_COLNAME,
         rscript = config["scriptdir"] + "/plot_pcangsd_pca.R",
     threads: 1
-    log: "{basedir}/pcangsd/local/{population}.{file}.plot.log"
+    log: "pcangsd/local/{population}.{file}.plot.log"
     conda:
         "../envs/r.yaml" 
     shell:

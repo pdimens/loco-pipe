@@ -156,7 +156,7 @@ into windows with fixed number of SNPs. This rule runs on each
 chromosome separately.
 
 - Key output files
-  - `{basedir}/lostruct/global/split_beagle/{chr}.w*.beagle.gz`:
+  - `lostruct/global/split_beagle/{chr}.w*.beagle.gz`:
     genotype likelihood in windows in beagle format
 - Customizable arguments:
   - `snp_window_size`: number of SNPs in a window. This is defaulted to

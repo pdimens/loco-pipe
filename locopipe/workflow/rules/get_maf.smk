@@ -3,23 +3,23 @@ rule get_maf:
     input:
         ref= REFERENCE,
         fai= REFERENCE+".fai",
-        bamlist="{basedir}/workflow/{population}_" + BAMLIST,
-        site_list="{basedir}/angsd/snp_calling_global/{chr}.snp_list"
+        bamlist="workflow/{population}_" + BAMLIST,
+        site_list="angsd/snp_calling_global/{chr}.snp_list"
     output:
-        expand("{{basedir}}/angsd/get_maf/{{population}}.{{chr}}.{ext}",
+        expand("angsd/get_maf/{{population}}.{{chr}}.{ext}",
                ext=[ "arg", "beagle.gz", "covMat", "ibs.gz", "ibsMat", "mafs.gz", "pos.gz", "saf.gz", "saf.idx", "saf.pos.gz" ]),
-        touch("{basedir}/angsd/get_maf/{population}.{chr}.done")
+        touch("angsd/get_maf/{population}.{chr}.done")
     threads:
         THREADS
     params:
-        outdir="{basedir}/angsd/get_maf",
+        outdir="angsd/get_maf",
         gl_model=config["gl_model"],
         minq=MINQ,
         minmapq=MINMAPQ,
         extra=config["get_maf"]["extra"],
         minind=MININD,
         mindepthind=MINDEPTHIND,
-    log: "{basedir}/angsd/get_maf/{population}.{chr}.log"
+    log: "angsd/get_maf/{population}.{chr}.log"
     conda: "../envs/angsd.yaml"
     shell:
         '''

@@ -4,16 +4,16 @@ rule get_theta:
     input:
         ref=REFERENCE,
         fai=REFERENCE+".fai",
-        bamlist="{basedir}/workflow/{population}_" + BAMLIST,
-        site_list="{basedir}/angsd/get_depth_global/{chr}.site_list",
+        bamlist="workflow/{population}_" + BAMLIST,
+        site_list="angsd/get_depth_global/{chr}.site_list",
     output:
-        expand("{{basedir}}/angsd/get_theta/{{population}}.{{chr}}.{ext}",
+        expand("angsd/get_theta/{{population}}.{{chr}}.{ext}",
                ext=[ "arg", "sfs", "thetas.idx", "thetas.gz", "thetas.tsv.gz", "saf.gz", "saf.idx", "saf.pos.gz", "average_thetas.pestPG" ]),
-        done = touch("{basedir}/angsd/get_theta/{population}.{chr}.done"),
+        done = touch("angsd/get_theta/{population}.{chr}.done"),
     threads: THREADS
     params:
-        outdir="{basedir}/angsd/get_theta",
-        outbase="{basedir}/angsd/get_theta/{population}.{chr}",
+        outdir="angsd/get_theta",
+        outbase="angsd/get_theta/{population}.{chr}",
         gl_model=config["gl_model"],
         minq=MINQ,
         minind = MININD,
@@ -24,7 +24,7 @@ rule get_theta:
         step_size=config["get_theta"]["step_size"],
         dosaf_extra=config["get_theta"]["dosaf_extra"],
         realsfs_extra=config["get_theta"]["realsfs_extra"],
-    log: "{basedir}/angsd/get_theta/{population}.{chr}.log"
+    log: "angsd/get_theta/{population}.{chr}.log"
     conda: "../envs/angsd.yaml"
     shell:
         '''
@@ -83,18 +83,18 @@ rule get_theta:
 # This rule generates a barplot for sfs distribution of each population.
 rule plot_sfs_distribution:
     input:
-        chr_list = "{basedir}/workflow/chr_list.txt",
-        done = expand("{{basedir}}/angsd/get_theta/{{population}}.{chr}.done", chr = CHRS),
+        chr_list = "workflow/chr_list.txt",
+        done = expand("angsd/get_theta/{{population}}.{chr}.done", chr = CHRS),
     output:
-        plot = "{basedir}/figures/sfs/{population}.sfs.png",
-        done = touch("{basedir}/figures/sfs/{population}.sfs.done"),
+        plot = "figures/sfs/{population}.sfs.png",
+        done = touch("figures/sfs/{population}.sfs.done"),
     params:
-        indir = "{basedir}/angsd/get_theta",
-        outdir = "{basedir}/figures/sfs",
+        indir = "angsd/get_theta",
+        outdir = "figures/sfs",
         ref_type = config["ref_type"],
         rscript=config["scriptdir"] + "/plot_SFS.R",
     threads: 4
-    log: "{basedir}/angsd/get_theta/sfs_distribution/{population}.plot_sfs_distribution.log"
+    log: "angsd/get_theta/sfs_distribution/{population}.plot_sfs_distribution.log"
     conda:
         "../envs/r.yaml" 
     shell:
@@ -109,20 +109,20 @@ rule plot_sfs_distribution:
 rule plot_theta_by_window:
     input:
         chr_table = CHR_TABLE_PATH,
-        done = expand("{{basedir}}/angsd/get_theta/{{population}}.{chr}.done", chr = CHRS),
+        done = expand("angsd/get_theta/{{population}}.{chr}.done", chr = CHRS),
     output:
-        plot = "{basedir}/figures/theta/{population}.theta_by_window.png",
-        done = touch("{basedir}/figures/theta/{population}.theta_by_window.done"),
+        plot = "figures/theta/{population}.theta_by_window.png",
+        done = touch("figures/theta/{population}.theta_by_window.done"),
     params:
-        indir = "{basedir}/angsd/get_theta",
-        outdir = "{basedir}/figures/theta",
+        indir = "angsd/get_theta",
+        outdir = "figures/theta",
         window_size=config["get_theta"]["window_size"],
         step_size=config["get_theta"]["step_size"],
         fig_height = config["get_theta"]["fig_height"],
         fig_width = config["get_theta"]["fig_width"],
         rscript = config["scriptdir"] + "/plot_theta_by_window.R",
     threads: 4
-    log: "{basedir}/angsd/get_theta/{population}.plot_theta_by_window.log"
+    log: "angsd/get_theta/{population}.plot_theta_by_window.log"
     conda:
         "../envs/r.yaml" 
     shell:

@@ -5,9 +5,9 @@ _N = config["subset_snp_list_global"]["n"]
 # analyses that require unlinked SNPs (e.g. admixture analysis).
 rule subset_snp_list_global:
     input: 
-        snp_list = "{basedir}/angsd/snp_calling_global/{chr}.snp_list",
+        snp_list = "angsd/snp_calling_global/{chr}.snp_list",
     output: 
-        subsetted_snp_list = "{basedir}/angsd/snp_calling_global/{chr}.subsetted.snp_list",
+        subsetted_snp_list = "angsd/snp_calling_global/{chr}.subsetted.snp_list",
     params: n = _N
     threads: 1
     shell:
@@ -19,9 +19,9 @@ rule subset_snp_list_global:
 # "subset_snp_list_global". Again, these files would be used for analyses that require unlinked SNPs. 
 rule subset_beagle_global:
     input: 
-        beagle = "{basedir}/angsd/snp_calling_global/{chr}.beagle.gz"
+        beagle = "angsd/snp_calling_global/{chr}.beagle.gz"
     output: 
-        subsetted_beagle = "{basedir}/angsd/snp_calling_global/{chr}.subsetted.beagle",
+        subsetted_beagle = "angsd/snp_calling_global/{chr}.subsetted.beagle",
     params: n = _N
     threads: 1
     shell:
@@ -33,9 +33,9 @@ rule subset_beagle_global:
 # The logic used to subset is the same as above.
 rule subset_beagle_local:
     input: 
-        beagle = "{basedir}/angsd/get_maf/{population}.{chr}.beagle.gz"
+        beagle = "angsd/get_maf/{population}.{chr}.beagle.gz"
     output: 
-        subsetted_beagle = "{basedir}/angsd/get_maf/{population}.{chr}.subsetted.beagle",
+        subsetted_beagle = "angsd/get_maf/{population}.{chr}.subsetted.beagle",
     params: n = config["subset_snp_list_local"]["n"]
     threads: 1
     shell:
