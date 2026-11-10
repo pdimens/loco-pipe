@@ -73,65 +73,66 @@ for i in range(len(POP_L1)):
 rule all:
     input:
         ## bamlists
-        expand("{basedir}/workflow/{bamlist}", basedir = BASEDIR,bamlist = BAMLIST),
-        expand("{basedir}/workflow/{population}_{bamlist}", basedir = BASEDIR, population = POP_L1, bamlist=BAMLIST),
+        expand(WORKFLOWDIR + "/{bamlist}", bamlist = BAMLIST),
+        expand(WORKFLOWDIR + "/{population}_{bamlist}", population = POP_L1, bamlist=BAMLIST),
         
         ## bam indices
         expand("{bam}.bai", bam=ALL_BAMS),
         
         ## depth count and depth filter
-        expand("{basedir}/angsd/get_depth_global/{chr}.done", basedir = BASEDIR, chr = CHRS),
-        expand("{basedir}/angsd/get_depth_global/depth_filter.tsv", basedir=BASEDIR),
-        expand("{basedir}/figures/depth/depth_filter.png", basedir=BASEDIR),
+        expand(BASEDIR + "/angsd/get_depth_global/{chr}.done", chr = CHRS),
+        BASEDIR + "/angsd/get_depth_global/depth_filter.tsv",
+        BASEDIR + "/figures/depth/depth_filter.png",
         
         ## SNP calling and thinning
-        expand("{basedir}/angsd/snp_calling_global/{chr}.done", basedir=BASEDIR, chr=CHRS) if config['run']["snp_calling_global"] else [],
-        expand("{basedir}/angsd/snp_calling_global/combined.subsetted.beagle.done", basedir=BASEDIR) if config['run']["snp_calling_global"] else [],
-        expand("{basedir}/angsd/snp_calling_global/combined.subsetted.snp_list.done", basedir=BASEDIR) if config['run']["snp_calling_global"] else [],
-        expand("{basedir}/angsd/snp_calling_global/combined.beagle.done", basedir=BASEDIR) if config['run']["snp_calling_global"] else [],
+        expand(BASEDIR + "/angsd/snp_calling_global/{chr}.done", chr=CHRS) if config['run']["snp_calling_global"] else [],
+        BASEDIR + "/angsd/snp_calling_global/combined.subsetted.beagle.done" if config['run']["snp_calling_global"] else [],
+        BASEDIR + "/angsd/snp_calling_global/combined.subsetted.snp_list.done" if config['run']["snp_calling_global"] else [],
+        BASEDIR + "/angsd/snp_calling_global/combined.beagle.done" if config['run']["snp_calling_global"] else [],
 
         ## PCAngsd global
-        expand("{basedir}/pcangsd/global/combined.subsetted.done", basedir = BASEDIR) if config['run']["pcangsd_global"] else [],
-        expand("{basedir}/figures/pcangsd/global/combined.subsetted.done", basedir = BASEDIR) if config['run']["pcangsd_global"] else [],
+        BASEDIR + "/pcangsd/global/combined.subsetted.done" if config['run']["pcangsd_global"] else [],
+        BASEDIR + "/figures/pcangsd/global/combined.subsetted.done" if config['run']["pcangsd_global"] else [],
         
         ## PCAngsd local
-        expand("{basedir}/pcangsd/local/{population}.combined.subsetted.done", basedir=BASEDIR, population = POP_L1) if config['run']["pcangsd_local"] else [],
-        expand("{basedir}/figures/pcangsd/local/{population}.combined.subsetted.done", basedir=BASEDIR, population = POP_L1) if config['run']["pcangsd_local"] else [],
+        expand(BASEDIR + "/pcangsd/local/{population}.combined.subsetted.done", population = POP_L1) if config['run']["pcangsd_local"] else [],
+        expand(BASEDIR + "/figures/pcangsd/local/{population}.combined.subsetted.done", population = POP_L1) if config['run']["pcangsd_local"] else [],
 
         ## Ohana global
-        expand("{basedir}/ohana/global/combined.subsetted.k{k}.done", 
-               basedir=BASEDIR, 
+        expand(BASEDIR + "/ohana/global/combined.subsetted.k{k}.done", 
                k = list(range(config["ohana_global"]["min_k"],
-               config["ohana_global"]["max_k"] + 1))) if config['run']["ohana_global"] else [],
-        expand("{basedir}/figures/ohana/global/combined.subsetted.done", basedir = BASEDIR) if config['run']["ohana_global"] else [],
+               config["ohana_global"]["max_k"] + 1))
+            ) if config['run']["ohana_global"] else [],
+        f"{BASEDIR}/figures/ohana/global/combined.subsetted.done" if config['run']["ohana_global"] else [],
 
         ## Ohana local
-        expand("{basedir}/ohana/local/{population}.combined.subsetted.k{k}.done", 
-               basedir=BASEDIR, population = POP_L1,
+        expand(BASEDIR + "/ohana/local/{population}.combined.subsetted.k{k}.done", 
+               population = POP_L1,
                k = list(range(config["ohana_local"]["min_k"],
-               config["ohana_local"]["max_k"] + 1))) if config['run']["ohana_local"] else [],
-        expand("{basedir}/figures/ohana/local/{population}.combined.subsetted.done", basedir = BASEDIR, population = POP_L1) if config['run']["ohana_local"] else [],
+               config["ohana_local"]["max_k"] + 1))
+            ) if config['run']["ohana_local"] else [],
+        expand(BASEDIR + "/figures/ohana/local/{population}.combined.subsetted.done", population = POP_L1) if config['run']["ohana_local"] else [],
         
         ## maf and population-level genotype likelihood estimation
-        expand("{basedir}/angsd/get_maf/{population}.{chr}.done",  basedir=BASEDIR, population = POP_L1, chr=CHRS) if config['run']["get_maf"] else [],
-        expand("{basedir}/angsd/get_maf/{population}.combined.subsetted.beagle.done",  basedir=BASEDIR, population = POP_L1, chr=CHRS) if config['run']["get_maf"] else [],
+        expand(BASEDIR + "/angsd/get_maf/{population}.{chr}.done", population = POP_L1, chr=CHRS) if config['run']["get_maf"] else [],
+        expand(BASEDIR + "/angsd/get_maf/{population}.combined.subsetted.beagle.done", population = POP_L1, chr=CHRS) if config['run']["get_maf"] else [],
         
         ## Fst
         expand("{path}.{chr}.done", path=POP_L1_FST_PATH, chr=CHRS) if config['run']["get_fst"] else [],
         expand("{path}.done", path=POP_L1_FST_PLOT_PATH) if config['run']["get_fst"] else [],
         
         ## heterozygosity
-        expand("{basedir}/angsd/heterozygosity/{id}.done", basedir=BASEDIR, id=ALL_SAMPLES) if config['run']["get_heterozygosity"] else [],
-        expand("{basedir}/figures/heterozygosity/heterozygosity.done", basedir=BASEDIR) if config['run']["get_heterozygosity"] else [],
+        expand(BASEDIR + "/angsd/heterozygosity/{id}.done", id=ALL_SAMPLES) if config['run']["get_heterozygosity"] else [],
+        f"{BASEDIR}/figures/heterozygosity/heterozygosity.done" if config['run']["get_heterozygosity"] else [],
         
         ## theta and neutrality stats
-        expand("{basedir}/angsd/get_theta/{population}.{chr}.done", basedir=BASEDIR, population = POP_L1, chr=CHRS) if config['run']["get_theta"] else [],
-        expand("{basedir}/figures/sfs/{population}.sfs.done", basedir=BASEDIR, population = POP_L1) if config['run']["get_theta"] else [],
-        expand("{basedir}/figures/theta/{population}.theta_by_window.done", basedir=BASEDIR, population = POP_L1) if config['run']["get_theta"] else [],
+        expand(BASEDIR + "/angsd/get_theta/{population}.{chr}.done", population = POP_L1, chr=CHRS) if config['run']["get_theta"] else [],
+        expand(BASEDIR + "/figures/sfs/{population}.sfs.done", population = POP_L1) if config['run']["get_theta"] else [],
+        expand(BASEDIR + "/figures/theta/{population}.theta_by_window.done", population = POP_L1) if config['run']["get_theta"] else [],
         
         ## local PCA with lostruct
-        expand("{basedir}/figures/lostruct/global/plot_lostruct_mds.done", basedir = BASEDIR) if config['run']["lostruct_global"] else [],
-        expand("{basedir}/figures/lostruct/global/plot_lostruct_outlier_pca.done", basedir = BASEDIR) if config['run']["lostruct_global"] else [],
+        "{BASEDIR}/figures/lostruct/global/plot_lostruct_mds.done" if config['run']["lostruct_global"] else [],
+        "{BASEDIR}/figures/lostruct/global/plot_lostruct_outlier_pca.done" if config['run']["lostruct_global"] else [],
 
 #################################################
 ## Modular Snakefiles to be included
