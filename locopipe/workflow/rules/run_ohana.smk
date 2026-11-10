@@ -80,11 +80,11 @@ rule plot_ohana_admixture_global:
     params:
         indir = "{basedir}/ohana/global",
         outdir = "{basedir}/figures/ohana/global",
-        sample_table_path = "{basedir}/docs/" + config["global"]["sample_table"],
-        group_by = config["run_ohana_global"]["group_by"],
+        sample_table_path = "{basedir}/docs/" + config["sample_table"],
+        group_by = POP_L1_COL,
         min_k = config["run_ohana_global"]["min_k"],
         max_k = config["run_ohana_global"]["max_k"],
-        rscript = config["global"]["scriptdir"] + "/plot_ohana_admixture.R",
+        rscript = config["scriptdir"] + "/plot_ohana_admixture.R",
     threads: 1
     log: "{basedir}/ohana/global/{file}.plot.log"
     conda:
@@ -105,12 +105,12 @@ rule plot_ohana_admixture_local:
     params:
         indir = "{basedir}/ohana/local",
         outdir = "{basedir}/figures/ohana/local",
-        sample_table_path = "{basedir}/docs/" + config["global"]["sample_table"],
-        group_by = config["run_ohana_local"]["group_by"],
+        sample_table_path = "{basedir}/docs/" + config["sample_table"],
+        group_by = POP_L1_COL,
         min_k = config["run_ohana_local"]["min_k"],
         max_k = config["run_ohana_local"]["max_k"],
-        pop_col = config["global"]["pop_level"],
-        rscript = config["global"]["scriptdir"] + "/plot_ohana_admixture.R",
+        pop_col = POP_L1_COL,
+        rscript = config["scriptdir"] + "/plot_ohana_admixture.R",
     threads: 1
     log: "{basedir}/ohana/local/{population}.{file}.plot.log"
     conda:

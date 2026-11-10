@@ -15,12 +15,12 @@ rule get_theta:
     params:
         outdir="{basedir}/angsd/get_theta",
         outbase="{basedir}/angsd/get_theta/{population}.{chr}",
-        gl_model=config["global"]["gl_model"],
+        gl_model=config["gl_model"],
         minq=config["get_theta"]["minq"],
         minind = config["get_theta"]["minind"],
         mindepthind = config["get_theta"]["mindepthind"],
         minmapq=config["get_theta"]["minmapq"],
-        ref_type = config["global"]["ref_type"],
+        ref_type = config["ref_type"],
         window_size=config["get_theta"]["window_size"],
         step_size=config["get_theta"]["step_size"],
         dosaf_extra=config["get_theta"]["dosaf_extra"],
@@ -92,8 +92,8 @@ rule plot_sfs_distribution:
     params:
         indir = "{basedir}/angsd/get_theta",
         outdir = "{basedir}/figures/sfs",
-        ref_type = config["global"]["ref_type"],
-        rscript=config["global"]["scriptdir"] + "/plot_SFS.R",
+        ref_type = config["ref_type"],
+        rscript=config["scriptdir"] + "/plot_SFS.R",
     threads: 4
     log: "{basedir}/angsd/get_theta/sfs_distribution/{population}.plot_sfs_distribution.log"
     conda:
@@ -121,7 +121,7 @@ rule plot_theta_by_window:
         step_size=config["get_theta"]["step_size"],
         fig_height = config["get_theta"]["fig_height"],
         fig_width = config["get_theta"]["fig_width"],
-        rscript = config["global"]["scriptdir"] + "/plot_theta_by_window.R",
+        rscript = config["scriptdir"] + "/plot_theta_by_window.R",
     threads: 4
     log: "{basedir}/angsd/get_theta/{population}.plot_theta_by_window.log"
     conda:

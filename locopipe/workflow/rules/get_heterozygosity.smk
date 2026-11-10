@@ -17,13 +17,13 @@ rule get_heterozygosity:
         done =touch("{basedir}/angsd/heterozygosity/{id}.done")
     params:
         outdir = "{basedir}/angsd/heterozygosity",
-        gl_model = config["global"]["gl_model"],
-        minq = config["get_heterozygosity"]["minq"],
-        minmapq = config["get_heterozygosity"]["minmapq"],
+        gl_model = config["gl_model"],
+        minq = MINQ,
+        minmapq =MINMAPQ,
         dosaf_extra = config["get_heterozygosity"]["dosaf_extra"],
-        ref_type = config["global"]["ref_type"],
+        ref_type = config["ref_type"],
         realsfs_extra = config["get_heterozygosity"]["realsfs_extra"],
-    threads: config["get_heterozygosity"]["threads"]
+    threads: THREADS
     log: 
         dosaf = "{basedir}/angsd/heterozygosity/dosaf_{id}.log",
         realsfs = "{basedir}/angsd/heterozygosity/realsfs_{id}.log"
@@ -61,9 +61,9 @@ rule plot_heterozygosity:
     params:
         indir="{basedir}/angsd/heterozygosity",
         outdir="{basedir}/figures/heterozygosity",
-        sample_table_path="{basedir}/docs/" + config["global"]["sample_table"],
-        color_by=config["get_heterozygosity"]["color_by"],
-        rscript=config["global"]["scriptdir"] + "/plot_heterozygosity.R",
+        sample_table_path="{basedir}/docs/" + config["sample_table"],
+        color_by=POP_L1_COLNAME,
+        rscript=config["scriptdir"] + "/plot_heterozygosity.R",
     threads: 1
     log: "{basedir}/angsd/heterozygosity/plot_heterozygosity.log"
     conda:

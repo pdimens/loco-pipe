@@ -10,15 +10,15 @@ rule get_maf:
                ext=[ "arg", "beagle.gz", "covMat", "ibs.gz", "ibsMat", "mafs.gz", "pos.gz", "saf.gz", "saf.idx", "saf.pos.gz" ]),
         touch("{basedir}/angsd/get_maf/{population}.{chr}.done")
     threads:
-        config["get_depth_global"]["threads"]
+        THREADS
     params:
         outdir="{basedir}/angsd/get_maf",
-        gl_model=config["global"]["gl_model"],
-        minq=config["get_depth_global"]["minq"],
-        minmapq=config["get_depth_global"]["minmapq"],
+        gl_model=config["gl_model"],
+        minq=MINQ,
+        minmapq=MINMAPQ,
         extra=config["get_maf"]["extra"],
-        minind=config["get_maf"]["minind"],
-        mindepthind=config["get_maf"]["mindepthind"],
+        minind=MININD,
+        mindepthind=MINDEPTHIND,
     log: "{basedir}/angsd/get_maf/{population}.{chr}.log"
     conda: "../envs/angsd.yaml"
     shell:

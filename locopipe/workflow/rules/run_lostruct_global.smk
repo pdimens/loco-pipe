@@ -32,8 +32,8 @@ rule run_pcangsd_in_windows_global:
         outdir="{basedir}/lostruct/global/run_pcangsd_in_windows",
         snp_window_size=config["lostruct"]["snp_window_size"],
         ## note that this will make the number of SNPs in each window different. if we want to keep the number of SNPs consistent, we'll need to stick with the minmaf filter used when generating the beagle file
-        minmaf=config["lostruct"]["minmaf"],
-    threads: config["run_pcangsd_global"]["threads"]
+        minmaf=MINMAF,
+    threads: THREADS
     log: "{basedir}/lostruct/global/run_pcangsd_in_windows/{chr}.log"
     conda:
         "../envs/pcangsd.yaml" 
@@ -68,7 +68,7 @@ rule summarize_pcangsd_for_lostruct_global:
         outdir="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct",
         cov_dir="{basedir}/lostruct/global/run_pcangsd_in_windows",
         beagle_dir="{basedir}/lostruct/global/split_beagle",
-        rscript=config["global"]["scriptdir"] + "/summarize_pcangsd_for_lostruct.R",
+        rscript=config["scriptdir"] + "/summarize_pcangsd_for_lostruct.R",
         pc=config["lostruct"]["pc"],
     threads: 8
     log: "{basedir}/lostruct/global/summarize_pcangsd_for_lostruct/{chr}.log"
@@ -96,13 +96,13 @@ rule run_lostruct_global:
         proportion_variance_by_chr=expand("{{basedir}}/lostruct/global/run_lostruct/{chr}.proportion_variance.txt", chr=CHRS),
         done=touch("{basedir}/lostruct/global/run_lostruct/run_lostruct.done"),
     params:
-        rscript=config["global"]["scriptdir"] + "/run_lostruct.R",
-        chr_table_path=config["global"]["basedir"] + "/docs/" + config["global"]["chr_table"],
+        rscript=config["scriptdir"] + "/run_lostruct.R",
+        chr_table_path=config["basedir"] + "/docs/" + config["chr_table"],
         pc=config["lostruct"]["pc"],
         k=config["lostruct"]["k"],
         indir="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct",
         outdir="{basedir}/lostruct/global/run_lostruct",
-    threads: config["lostruct"]["threads"]
+    threads: THREADS
     log: "{basedir}/lostruct/global/run_lostruct/run_lostruct.log"
     conda:
         "lostruct_lcpipe"  ## lostruct isn't available on conda. we'll need to set up a conda environment with lostruct beforehand
@@ -124,8 +124,8 @@ rule plot_lostruct_mds_global:
         separated_plot="{basedir}/figures/lostruct/global/separated.mds.png",
         done=touch("{basedir}/figures/lostruct/global/plot_lostruct_mds.done"),
     params:
-        rscript=config["global"]["scriptdir"] + "/plot_lostruct_mds.R",
-        chr_table_path=config["global"]["basedir"] + "/docs/" + config["global"]["chr_table"],
+        rscript=config["scriptdir"] + "/plot_lostruct_mds.R",
+        chr_table_path=config["basedir"] + "/docs/" + config["chr_table"],
         indir="{basedir}/lostruct/global/run_lostruct",
         outdir="{basedir}/lostruct/global/plot_lostruct_mds",
         plot_dir="{basedir}/figures/lostruct/global",
@@ -155,8 +155,8 @@ rule run_pcangsd_with_lostruct_outliers_global:
         indir="{basedir}/lostruct/global/plot_lostruct_mds",
         outdir="{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers",
         beagle_dir="{basedir}/lostruct/global/split_beagle",
-        minmaf=config["lostruct"]["minmaf"],
-    threads: config["run_pcangsd_global"]["threads"]
+        minmaf=MINMAF,
+    threads: THREADS
     log: "{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers/run_pcangsd_with_lostruct_outliers.log"
     conda:
         "../envs/pcangsd.yaml" 
@@ -201,12 +201,12 @@ rule plot_lostruct_outlier_pca_global:
         done=touch("{basedir}/figures/lostruct/global/plot_lostruct_outlier_pca.done"),
     params:
         outdir="{basedir}/lostruct/global/plot_lostruct_outlier_pca",
-        rscript=config["global"]["scriptdir"] + "/plot_lostruct_outlier_pca.R",
+        rscript=config["scriptdir"] + "/plot_lostruct_outlier_pca.R",
         cov_dir="{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers",
         plot_dir="{basedir}/figures/lostruct/global",
-        sample_table_path="{basedir}/docs/" + config["global"]["sample_table"],
+        sample_table_path="{basedir}/docs/" + config["sample_table"],
         color_by=config["lostruct"]["color_by"],
-        chr_table_path=config["global"]["basedir"] + "/docs/" + config["global"]["chr_table"],
+        chr_table_path=config["basedir"] + "/docs/" + config["chr_table"],
         k=config["lostruct"]["k"],
     threads: 4
     log: "{basedir}/lostruct/global/plot_lostruct_outlier_pca/plot_lostruct_outlier_pca.log"

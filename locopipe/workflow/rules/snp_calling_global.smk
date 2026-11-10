@@ -20,15 +20,15 @@ rule snp_calling_global:
                ext = [ "arg", "beagle.gz", "covMat", "depthGlobal", "depthSample", "ibs.gz", "ibsMat", "mafs.gz", "pos.gz", "snp_list", "snp_list.idx", "snp_list.bin" ]),
         touch("{basedir}/angsd/snp_calling_global/{chr}.done")
     threads:
-        config["get_depth_global"]["threads"]
+        8
     params:
         outdir = "{basedir}/angsd/snp_calling_global",
-        gl_model = config["global"]["gl_model"],
-        minq = config["get_depth_global"]["minq"],
-        minmapq = config["get_depth_global"]["minmapq"],
+        gl_model = config["gl_model"],
+        minq = MINQ,
+        minmapq = MINMAPQ,
         minind_proportion = config["snp_calling_global"]["minind_proportion"],
-        mindepthind = config["snp_calling_global"]["mindepthind"],
-        minmaf = config["snp_calling_global"]["minmaf"],
+        mindepthind = MINDEPTHIND,
+        minmaf = MINMAF,
         pval = config["snp_calling_global"]["pval"],
         extra = config["snp_calling_global"]["extra"]
     log: "{basedir}/angsd/snp_calling_global/{chr}.log"

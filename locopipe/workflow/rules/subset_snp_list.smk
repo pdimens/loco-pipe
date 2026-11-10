@@ -1,3 +1,5 @@
+_N = config["subset_snp_list_global"]["n"]
+
 # This rule uses the snp_list file outputted from the snp_calling_global rule and generates a subset of
 # SNPs for each chromosome by choosing one in every "n" SNPs. The resulting SNP list would be useful for
 # analyses that require unlinked SNPs (e.g. admixture analysis).
@@ -6,7 +8,7 @@ rule subset_snp_list_global:
         snp_list = "{basedir}/angsd/snp_calling_global/{chr}.snp_list",
     output: 
         subsetted_snp_list = "{basedir}/angsd/snp_calling_global/{chr}.subsetted.snp_list",
-    params: n = config["subset_snp_list_global"]["n"]
+    params: n = _N
     threads: 1
     shell:
         '''
@@ -20,7 +22,7 @@ rule subset_beagle_global:
         beagle = "{basedir}/angsd/snp_calling_global/{chr}.beagle.gz"
     output: 
         subsetted_beagle = "{basedir}/angsd/snp_calling_global/{chr}.subsetted.beagle",
-    params: n = config["subset_snp_list_global"]["n"]
+    params: n = _N
     threads: 1
     shell:
         '''

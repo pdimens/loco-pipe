@@ -19,11 +19,11 @@ rule get_depth_global:
                ext = [ "arg", "depthGlobal", "depthSample", "pos.gz" ]),
         touch("{basedir}/angsd/get_depth_global/{chr}.done")
     threads: 
-        config["get_depth_global"]["threads"]
+        THREADS
     params:
         outdir = "{basedir}/angsd/get_depth_global",
-        minq = config["get_depth_global"]["minq"],
-        minmapq = config["get_depth_global"]["minmapq"],
+        minq = MINQ,
+        minmapq = MINMAPQ,
         extra = config["get_depth_global"]["extra"]
     log: "{basedir}/angsd/get_depth_global/{chr}.log"
     conda: "../envs/angsd.yaml"

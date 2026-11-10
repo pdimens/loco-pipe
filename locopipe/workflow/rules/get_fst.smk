@@ -14,7 +14,7 @@ rule get_fst:
         config["get_fst"]["threads"]
     params:
         outdir = "{basedir}/angsd/get_fst",
-        ref_type = config["global"]["ref_type"],
+        ref_type = config["ref_type"],
         outbase = "{basedir}/angsd/get_fst/{population1}.{population2}.{chr}",
         extra = config["get_fst"]["extra"],
     log: "{basedir}/angsd/get_fst/{population1}.{population2}.{chr}.log"
@@ -41,7 +41,7 @@ rule plot_fst:
         done = touch("{basedir}/figures/fst/{population1}.{population2}.done"),
     threads: 4
     params:
-        rscript = config["global"]["scriptdir"] + "/plot_fst.R",
+        rscript = config["scriptdir"] + "/plot_fst.R",
         snp_window_size = config["get_fst"]["snp_window_size"],
         bp_window_size = config["get_fst"]["bp_window_size"],
         fig_height = config["get_fst"]["fig_height"],

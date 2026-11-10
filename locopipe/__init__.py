@@ -7,7 +7,6 @@ import shutil
 import subprocess
 import sys
 import yaml
-from locopipe.workflow import CONFIG
 from locopipe.validation import BAMfile
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
@@ -27,7 +26,8 @@ def init(output, reference, samples, simple, hpc):
     """
     os.makedirs(os.path.join(output, "docs"), exist_ok=True)
     os.makedirs(os.path.join(output, "workflow"), exist_ok=True)
-    notices = []
+    workdir = os.path.relpath(os.path.join(output, "workflow"))
+    checklist = []
     shutil.copytree(
         resources.files('locopipe.workflow').as_posix(), f"{output}/workflow",
         dirs_exist_ok=True,
@@ -50,60 +50,64 @@ def init(output, reference, samples, simple, hpc):
             _hpc = yaml.full_load(f)
         # merge the dicts
         profile = profile | _hpc
-        notices.append(f'- using the {hpc} scheduler requires \033[92msnakemake-executor-plugin-{hpc}\033[0m to be installed')
-
-    with open(os.path.join(output, 'workflow', 'profile.yaml'), "w", encoding="utf-8") as sm_config:
-        yaml.dump(profile, sm_config, sort_keys=False)
-
-    with open(os.path.join(output, 'workflow', "locopipe.yaml"), 'w') as cnfg:
-        cnf = CONFIG.format(
-            basedir = os.path.abspath(output),
-            reference = os.path.abspath(reference),
-            scriptdir = os.path.abspath(f"{output}/workflow/scripts"),
-            groupcol = "population",
-            sampletable = "samples.tsv",
-            chromtable = "contigs.tsv"
+        checklist.append(f'• install \033[92msnakemake-executor-plugin-{hpc}\033[0m (if needed)')
+        checklist.append(
+            f'• provide HPC configurations to \033[92m{os.path.join(workdir, 'profile.yaml')}\033[0m'
         )
+
+    with open(os.path.join(workdir, 'profile.yaml'), "w", encoding="utf-8") as sm_profile:
+        yaml.dump(profile, sm_profile, sort_keys=False)
+
+    with open(os.path.join(workdir, "locopipe.yaml"), 'w') as cnfg:
+        with open(resources.files("locopipe.workflow.profiles") / 'config.yaml', 'r') as f:
+            cnf = f.read().format(
+                basedir = os.path.abspath(output),
+                reference = os.path.abspath(reference),
+                scriptdir = os.path.abspath(f"{output}/workflow/scripts"),
+                groupcol = "population",
+                sampletable = "samples.tsv",
+                chromtable = "contigs.tsv"
+            )
         if not simple:
             cnfg.write(cnf + "\n")
         else:
             for line in cnf.splitlines():
                 if line.strip() and '#' not in line:  
                   cnfg.write(line + '\n')
+        checklist.append(
+            f'• adjust \033[92m{os.path.join(workdir, 'locopipe.yaml')}\033[0m for your project'
+        )
     
     try:
-        with open(reference, 'r') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
-            id = 0
-            for i in fa:
-                if i.startswith(">"):
-                    id += 1
-                    _name = i.lstrip(">").split(" ")[0].strip()
-                    tb.write(f"{_name}\t{id}\n")
+        fa = open(reference, 'r')
     except UnicodeDecodeError:
         import gzip
-        with gzip.open(reference, 'rt') as fa, open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
-            id = 0
-            for i in fa:
-                if i.startswith(">"):
-                    id += 1
-                    _name = i.lstrip(">").split(" ")[0].strip()
-                    tb.write(f"{_name}\t{id}\n")
-    if id >= 100:
-        notices.append(
-            "- Number of included chromosomes is or exceeds 100, which is not recommended. "
-            f"The chromosome table ({os.path.join(output, 'contigs.tsv')}) should be curated to include <100."
-        )
+        fa = gzip.open(reference, 'rt')
+    with open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
+        id = 0
+        for i in fa:
+            if i.startswith(">"):
+                id += 1
+                _name = i.lstrip(">").split(" ")[0].strip()
+                tb.write(f"{_name}\t{id}\n")
+    fa.close()
+
+    if id >= 80:
+        checklist.append(f"• curate \033[92m{os.path.join(os.path.relpath(output), "docs", "contigs.tsv")}\033[0m so it has <80 contigs")
+
     with open(os.path.join(output, "docs", "samples.tsv"), 'w') as tb:
         tb.write("sample_name\tbam\tpopulation\n")
         for i in list(chain.from_iterable(samples)):
             _name = Path(i).stem
             tb.write(f"{_name}\t{i}\tgroupname\n")
     
-    notices.append(
-        f'- \033[92m{os.path.join(os.path.relpath(output), 'docs', 'samples.tsv')}\033[0m: samples have all been assigned to a single group and need to have distinct classifications.'
+    checklist.append(
+        f'• assign samples to populations in \033[92m{os.path.join(os.path.relpath(output), 'docs', 'samples.tsv')}\033[0m'
     )
 
-    print("Notice:\n" + "\n".join(notices), file = sys.stderr)
+    print("\nChecklist before running loco-pipe", file = sys.stderr)
+    print("──────────────────────────────────", file = sys.stderr)
+    print("\n".join(checklist), file = sys.stderr)
 
 @click.command(no_args_is_help = True, context_settings={"allow_interspersed_args" : False})
 @click.option('-t', '--threads', default = 8, show_default = True, type = click.IntRange(1,999, clamp = True), help = 'Number of threads to use')

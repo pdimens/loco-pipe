@@ -61,7 +61,7 @@ rule index_bam:
 # restrict analyses to a predetermined set of chromosomes for certain analyses (e.g. heterozygosity estimation)
 rule get_chr_list:
   input: 
-      chr_table = "{basedir}/docs/" + config["global"]["chr_table"],
+      chr_table = "{basedir}/docs/" + config["chr_table"],
   output:
       chr_list = "{basedir}/docs/chr_list.txt",
   shell:

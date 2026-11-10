@@ -7,8 +7,8 @@ rule run_pcangsd_pca_global:
         done = touch("{basedir}/pcangsd/global/{file}.done"),
     params:
         outdir = "{basedir}/pcangsd/global",
-        minmaf=config["run_pcangsd_global"]["minmaf"],
-    threads: config["run_pcangsd_global"]["threads"]
+        minmaf=MINMAF,
+    threads: THREADS
     log: "{basedir}/pcangsd/global/{file}.log"
     conda:
         "../envs/pcangsd.yaml" 
@@ -36,8 +36,8 @@ rule run_pcangsd_pca_local:
         done = touch("{basedir}/pcangsd/local/{population}.{file}.done"),
     params:
         outdir = "{basedir}/pcangsd/local",
-        minmaf=config["run_pcangsd_local"]["minmaf"],
-    threads: config["run_pcangsd_local"]["threads"]
+        minmaf = MINMAF,
+    threads: THREADS
     log: "{basedir}/pcangsd/local/{population}.{file}.log"
     conda:
         "../envs/pcangsd.yaml" 
@@ -66,9 +66,9 @@ rule plot_pcangsd_pca_global:
         done = touch("{basedir}/figures/pcangsd/global/{file}.done"),
     params:
         outdir = "{basedir}/figures/pcangsd/global",
-        sample_table_path = "{basedir}/docs/" + config["global"]["sample_table"],
-        color_by = config["run_pcangsd_global"]["color_by"],
-        rscript = config["global"]["scriptdir"] + "/plot_pcangsd_pca.R",
+        sample_table_path = "{basedir}/docs/" + config["sample_table"],
+        color_by = POP_L1_COL,
+        rscript = config["scriptdir"] + "/plot_pcangsd_pca.R",
     threads: 1
     log: "{basedir}/pcangsd/global/{file}.plot.log"
     conda:
@@ -90,10 +90,10 @@ rule plot_pcangsd_pca_local:
         done = touch("{basedir}/figures/pcangsd/local/{population}.{file}.done"),
     params:
         outdir = "{basedir}/figures/pcangsd/local",
-        sample_table_path = "{basedir}/docs/" + config["global"]["sample_table"],
-        color_by = config["run_pcangsd_local"]["color_by"],
-        pop_col = config["global"]["pop_level"],
-        rscript = config["global"]["scriptdir"] + "/plot_pcangsd_pca.R",
+        sample_table_path = "{basedir}/docs/" + config["sample_table"],
+        color_by = POP_L1_COL,
+        pop_col = POP_L1_COL,
+        rscript = config["scriptdir"] + "/plot_pcangsd_pca.R",
     threads: 1
     log: "{basedir}/pcangsd/local/{population}.{file}.plot.log"
     conda:

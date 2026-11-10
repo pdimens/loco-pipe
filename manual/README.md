@@ -297,8 +297,8 @@ POP_L1_FST_PLOT_PATH = []
 POP_L1_FST_PATH = []
 for i in range(len(POP_L1)):
   for j in range(i+1, len(POP_L1)):
-    POP_L1_FST_PLOT_PATH.append(config["global"]["basedir"] + '/figures/fst/' + POP_L1[i] + '.' + POP_L1[j])
-    POP_L1_FST_PATH.append(config["global"]["basedir"] + '/angsd/get_fst/' + POP_L1[i] + '.' + POP_L1[j])
+    POP_L1_FST_PLOT_PATH.append(["basedir"] + '/figures/fst/' + POP_L1[i] + '.' + POP_L1[j])
+    POP_L1_FST_PATH.append(["basedir"] + '/angsd/get_fst/' + POP_L1[i] + '.' + POP_L1[j])
 ```
 
 To run these analyses on selected pairs of populations, users can simply
