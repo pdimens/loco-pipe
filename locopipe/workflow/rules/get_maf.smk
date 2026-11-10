@@ -3,7 +3,7 @@ rule get_maf:
     input:
         ref= REFERENCE,
         fai= REFERENCE+".fai",
-        bamlist="{basedir}/docs/{population}_" + BAMLIST,
+        bamlist="{basedir}/workflow/{population}_" + BAMLIST,
         site_list="{basedir}/angsd/snp_calling_global/{chr}.snp_list"
     output:
         expand("{{basedir}}/angsd/get_maf/{{population}}.{{chr}}.{ext}",

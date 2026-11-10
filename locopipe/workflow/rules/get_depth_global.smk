@@ -12,7 +12,7 @@ rule get_depth_global:
     input:
         ref = REFERENCE,
         fai = REFERENCE + ".fai",
-        bamlist = "{basedir}/docs/" + BAMLIST,
+        bamlist = "{basedir}/workflow/" + BAMLIST,
         bai = get_input_bai(ALL_BAMS),
     output:
         expand("{{basedir}}/angsd/get_depth_global/{{chr}}.{ext}",

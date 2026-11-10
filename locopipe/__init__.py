@@ -31,7 +31,7 @@ def init(output, reference, samples, simple, hpc):
     shutil.copytree(
         resources.files('locopipe.workflow').as_posix(), f"{output}/workflow",
         dirs_exist_ok=True,
-        ignore = shutil.ignore_patterns('*__init__.py', '*__pycache__', 'profiles')    
+        ignore = shutil.ignore_patterns('*__init__.py', '*__pycache__', 'configs')    
     )
     profile = {
         **({'__use_yte__': True} if hpc else {}),
@@ -45,7 +45,7 @@ def init(output, reference, samples, simple, hpc):
         "conda-cleanup-pkgs": "cache"
     }
     if hpc:
-        _hpcyaml = resources.files("locopipe.workflow.profiles") / f'{hpc.lower()}.yml'
+        _hpcyaml = resources.files("locopipe.configs") / f'{hpc.lower()}.yml'
         with open(_hpcyaml) as f:
             _hpc = yaml.full_load(f)
         # merge the dicts
@@ -59,7 +59,7 @@ def init(output, reference, samples, simple, hpc):
         yaml.dump(profile, sm_profile, sort_keys=False)
 
     with open(os.path.join(workdir, "locopipe.yaml"), 'w') as cnfg:
-        with open(resources.files("locopipe.workflow.profiles") / 'config.yaml', 'r') as f:
+        with open(resources.files("locopipe.configs") / 'config.yaml', 'r') as f:
             cnf = f.read().format(
                 basedir = os.path.abspath(output),
                 reference = os.path.abspath(reference),
@@ -83,7 +83,7 @@ def init(output, reference, samples, simple, hpc):
     except UnicodeDecodeError:
         import gzip
         fa = gzip.open(reference, 'rt')
-    with open(os.path.join(output, "docs", "contigs.tsv"), 'w') as tb:
+    with open(os.path.join(workdir, "contigs.tsv"), 'w') as tb:
         id = 0
         for i in fa:
             if i.startswith(">"):
@@ -95,7 +95,7 @@ def init(output, reference, samples, simple, hpc):
     if id >= 80:
         checklist.append(f"• curate \033[92m{os.path.join(os.path.relpath(output), "docs", "contigs.tsv")}\033[0m so it has <80 contigs")
 
-    with open(os.path.join(output, "docs", "samples.tsv"), 'w') as tb:
+    with open(os.path.join(workdir, "samples.tsv"), 'w') as tb:
         tb.write("sample_name\tbam\tpopulation\n")
         for i in list(chain.from_iterable(samples)):
             _name = Path(i).stem

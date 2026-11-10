@@ -10,7 +10,7 @@ rule get_heterozygosity:
         bam = lambda wildcards: BAM_DICT[wildcards.id],
         site_list = "{basedir}/angsd/get_depth_global/combined.site_list",
         site_list_idx = "{basedir}/angsd/get_depth_global/combined.site_list.idx",
-        chr_list = BASEDIR + "/docs/chr_list.txt",
+        chr_list = BASEDIR + "/workflow/chr_list.txt",
     output:
         dosaf = expand("{{basedir}}/angsd/heterozygosity/{{id}}.{ext}", ext = ["saf.pos.gz", "saf.idx", "saf.gz", "arg"]),
         realsfs = "{basedir}/angsd/heterozygosity/{id}.sfs",
@@ -61,7 +61,7 @@ rule plot_heterozygosity:
     params:
         indir="{basedir}/angsd/heterozygosity",
         outdir="{basedir}/figures/heterozygosity",
-        sample_table_path="{basedir}/docs/" + config["sample_table"],
+        sample_table_path="{basedir}/workflow/" + config["sample_table"],
         color_by=POP_L1_COLNAME,
         rscript=config["scriptdir"] + "/plot_heterozygosity.R",
     threads: 1

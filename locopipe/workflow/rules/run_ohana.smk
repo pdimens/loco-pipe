@@ -72,7 +72,7 @@ rule run_ohana_local:
 
 rule plot_ohana_admixture_global:
     input:
-        done = expand("{{basedir}}/ohana/global/{{file}}.k{k}.done", k=list(range(config["run_ohana_global"]["min_k"], config["run_ohana_global"]["max_k"] + 1))),
+        done = expand("{{basedir}}/ohana/global/{{file}}.k{k}.done", k=list(range(config["ohana_global"]["min_k"], config["ohana_global"]["max_k"] + 1))),
     output:
         table = "{basedir}/ohana/global/{file}.tsv",
         plot = "{basedir}/figures/ohana/global/{file}.png",
@@ -80,10 +80,10 @@ rule plot_ohana_admixture_global:
     params:
         indir = "{basedir}/ohana/global",
         outdir = "{basedir}/figures/ohana/global",
-        sample_table_path = "{basedir}/docs/" + config["sample_table"],
+        sample_table_path = "{basedir}/workflow/" + config["sample_table"],
         group_by = POP_L1_COL,
-        min_k = config["run_ohana_global"]["min_k"],
-        max_k = config["run_ohana_global"]["max_k"],
+        min_k = config["ohana_global"]["min_k"],
+        max_k = config["ohana_global"]["max_k"],
         rscript = config["scriptdir"] + "/plot_ohana_admixture.R",
     threads: 1
     log: "{basedir}/ohana/global/{file}.plot.log"
@@ -97,7 +97,7 @@ rule plot_ohana_admixture_global:
 
 rule plot_ohana_admixture_local:
     input:
-        done = expand("{{basedir}}/ohana/local/{{population}}.{{file}}.k{k}.done", k=list(range(config["run_ohana_local"]["min_k"], config["run_ohana_local"]["max_k"] + 1))),
+        done = expand("{{basedir}}/ohana/local/{{population}}.{{file}}.k{k}.done", k=list(range(config["ohana_local"]["min_k"], config["ohana_local"]["max_k"] + 1))),
     output:
         table = "{basedir}/ohana/local/{population}.{file}.tsv",
         plot = "{basedir}/figures/ohana/local/{population}.{file}.png",
@@ -105,11 +105,11 @@ rule plot_ohana_admixture_local:
     params:
         indir = "{basedir}/ohana/local",
         outdir = "{basedir}/figures/ohana/local",
-        sample_table_path = "{basedir}/docs/" + config["sample_table"],
+        sample_table_path = "{basedir}/workflow/" + config["sample_table"],
         group_by = POP_L1_COL,
-        min_k = config["run_ohana_local"]["min_k"],
-        max_k = config["run_ohana_local"]["max_k"],
-        pop_col = POP_L1_COL,
+        min_k = config["ohana_local"]["min_k"],
+        max_k = config["ohana_local"]["max_k"],
+        pop_col = POP_L1_COLNAME,
         rscript = config["scriptdir"] + "/plot_ohana_admixture.R",
     threads: 1
     log: "{basedir}/ohana/local/{population}.{file}.plot.log"

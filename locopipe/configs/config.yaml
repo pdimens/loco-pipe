@@ -215,7 +215,7 @@ subset_snp_list_local:
 # conducts admix analysis using the ohana software across all samples.
 # More information about ohana could be found on this webpage: https://github.com/jade-cheng/ohana.
 # -----------------------------------------------------------------------------------------------------------------------
-run_ohana_global:
+ohana_global:
 
   # The minimum number of K (i.e. the number of ancestral/source population components assumed in the sample).
   min_k: 2
@@ -227,7 +227,7 @@ run_ohana_global:
 # The following parameters are similar to the above, but they are needed by the "run_ohana_local" rule 
 # in the "run_ohana.smk" file that conducts admix analysis in each population.
 # -----------------------------------------------------------------------------------------------------------------------
-run_ohana_local:
+ohana_local:
 
   # The minimum number of K (i.e. the number of ancestral/source population components assumed in the sample).
   min_k: 2

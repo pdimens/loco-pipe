@@ -15,7 +15,7 @@ fig_width <- args[8] %>% as.integer()
 
 #indir <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/angsd/get_theta"
 #plot <-  "/global/scratch/users/nicolas931010/loco-pipe/toyfish/figures/get_theta/vermilion.theta_by_window.png"
-#chr_table <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/docs/chr_table.tsv"
+#chr_table <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/workflow/chr_table.tsv"
 #window_size <- 10000
 #step_size <- 10000
 #population <- "vermilion"

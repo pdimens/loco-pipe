@@ -8,9 +8,11 @@ configfile: "config/config.yaml"
 ## Variables read directly from the config file
 
 BASEDIR  = config["basedir"]
+WORKFLOWDIR  = os.path.join(BASEDIR, 'workflow')
+
 REFERENCE = config["reference"]
-CHR_TABLE_PATH = BASEDIR + "/docs/" + config["chr_table"]
-SAMPLE_TABLE_PATH = BASEDIR + "/docs/" + config["sample_table"]
+CHR_TABLE_PATH = os.path.join(WORKFLOWDIR, config["chr_table"])
+SAMPLE_TABLE_PATH = os.path.join(WORKFLOWDIR, config["sample_table"])
 POP_L1_COLNAME = config["pop_level"]
 MINMAF      = config["minmaf"]
 MINQ        = config["minq"]
@@ -62,8 +64,8 @@ POP_L1_FST_PLOT_PATH = []
 POP_L1_FST_PATH = []
 for i in range(len(POP_L1)):
   for j in range(i+1, len(POP_L1)):
-    POP_L1_FST_PLOT_PATH.append(config["basedir"] + '/figures/fst/' + POP_L1[i] + '.' + POP_L1[j])
-    POP_L1_FST_PATH.append(config["basedir"] + '/angsd/get_fst/' + POP_L1[i] + '.' + POP_L1[j])
+    POP_L1_FST_PLOT_PATH.append(BASEDIR + '/figures/fst/' + POP_L1[i] + '.' + POP_L1[j])
+    POP_L1_FST_PATH.append(BASEDIR + '/angsd/get_fst/' + POP_L1[i] + '.' + POP_L1[j])
 
 #################################################
 ## Specify output files
@@ -71,8 +73,8 @@ for i in range(len(POP_L1)):
 rule all:
     input:
         ## bamlists
-        expand("{basedir}/docs/{bamlist}", basedir = BASEDIR,bamlist = BAMLIST),
-        expand("{basedir}/docs/{population}_{bamlist}", basedir = BASEDIR, population = POP_L1, bamlist=BAMLIST),
+        expand("{basedir}/workflow/{bamlist}", basedir = BASEDIR,bamlist = BAMLIST),
+        expand("{basedir}/workflow/{population}_{bamlist}", basedir = BASEDIR, population = POP_L1, bamlist=BAMLIST),
         
         ## bam indices
         expand("{bam}.bai", bam=ALL_BAMS),

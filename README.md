@@ -134,7 +134,7 @@ favorite software and/or pipeline to go from fastq to bam, but one
 pipeline that we particularly recommend is
 [grenepipe](https://github.com/moiexpositoalonsolab/grenepipe).
 
-#### grenepipe
+##### grenepipe
 
 grenepipe is a Snakemake pipeline for variant calling from raw sequence
 data. Although it is developed for high-coverage data, you can skip the

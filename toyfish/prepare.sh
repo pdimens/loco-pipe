@@ -13,5 +13,5 @@ mkdir -p $PIPEDIR/toyfish/config
 sed "s|/path/to/loco-pipe|$PIPEDIR|g" $PIPEDIR/config.yaml > $PIPEDIR/toyfish/config/config.yaml
 
 ## update the path in the sample table
-sed -i "s|/path/to/loco-pipe|$PIPEDIR|g" $PIPEDIR/toyfish/docs/sample_table.tsv
+sed -i "s|/path/to/loco-pipe|$PIPEDIR|g" $PIPEDIR/toyfish/workflow/sample_table.tsv
 

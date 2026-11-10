@@ -18,7 +18,7 @@ chr<-read_lines(chr_list,skip_empty_rows = TRUE)
 #indir <-"/global/scratch/users/zzhou32/softwares/loco-pipe/toyfish/angsd/get_theta"
 #outdir <- "/global/scratch/users/zzhou32/softwares/loco-pipe/toyfish/figures/theta/sfs_distribution"
 #population<- "sunset"
-#chr_list<- "/global/scratch/users/zzhou32/softwares/loco-pipe/toyfish/docs/chr_list.txt"
+#chr_list<- "/global/scratch/users/zzhou32/softwares/loco-pipe/toyfish/workflow/chr_list.txt"
 #ref_type<-1
 #fig_height <- args[5] %>% as.integer()
 #fig_width <- args[6] %>% as.integer()

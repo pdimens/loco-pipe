@@ -14,10 +14,10 @@ k <- args[6] %>% as.integer()
 
 # cov_dir <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/all-groups-filtered/lostruct/global/run_pcangsd_with_lostruct_outliers/"
 # plot_dir <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/all-groups-filtered/figures/lostruct/global"
-# sample_table_path <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/all-groups-filtered/docs/sample_table.tsv"
+# sample_table_path <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/all-groups-filtered/workflow/sample_table.tsv"
 # color_by <- "common_name"
 # k <- 10
-# chr_table_path <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/docs/chr_table.tsv"
+# chr_table_path <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/workflow/chr_table.tsv"
 
 ## Read in alternative chromosome names
 chr_table <- read_tsv(chr_table_path, col_names = FALSE, col_types = cols(.default = col_character()))

@@ -18,7 +18,7 @@ if(length(args)>5){
 
 # cov <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/pcangsd/local/vermilion.combined.subsetted.cov"
 # plot <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/figures/pcangsd/local/vermilion.combined.subsetted.png"
-# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/docs/metadata.tsv"
+# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/workflow/metadata.tsv"
 # color_by <- "pca_cluster"
 # pop_col <- "common_name"
 # pop <- "vermilion"

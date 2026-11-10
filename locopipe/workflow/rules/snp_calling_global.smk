@@ -12,7 +12,7 @@ rule snp_calling_global:
     input:
         ref = REFERENCE,
         fai = REFERENCE + ".fai",
-        bamlist = "{basedir}/docs/" + BAMLIST,
+        bamlist = "{basedir}/workflow/" + BAMLIST,
         bai = get_input_bai(ALL_BAMS),
         depth_filter = "{basedir}/angsd/get_depth_global/depth_filter.tsv"
     output:

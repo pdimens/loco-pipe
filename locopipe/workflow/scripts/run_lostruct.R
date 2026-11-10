@@ -14,7 +14,7 @@ in_dir <- args[4]
 out_dir <- args[5]
 threads <- args[6] %>% as.integer()
 
-# chr_list <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/docs/chr_list.txt"
+# chr_list <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/workflow/chr_list.txt"
 # pc <- 2
 # k <- 10
 # out_dir <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/black-and-yellow_gopher/lostruct/global/r"

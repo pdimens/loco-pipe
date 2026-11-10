@@ -97,7 +97,7 @@ rule run_lostruct_global:
         done=touch("{basedir}/lostruct/global/run_lostruct/run_lostruct.done"),
     params:
         rscript=config["scriptdir"] + "/run_lostruct.R",
-        chr_table_path=config["basedir"] + "/docs/" + config["chr_table"],
+        chr_table_path=BASEDIR + "/workflow/" + config["chr_table"],
         pc=config["lostruct"]["pc"],
         k=config["lostruct"]["k"],
         indir="{basedir}/lostruct/global/summarize_pcangsd_for_lostruct",
@@ -125,7 +125,7 @@ rule plot_lostruct_mds_global:
         done=touch("{basedir}/figures/lostruct/global/plot_lostruct_mds.done"),
     params:
         rscript=config["scriptdir"] + "/plot_lostruct_mds.R",
-        chr_table_path=config["basedir"] + "/docs/" + config["chr_table"],
+        chr_table_path=BASEDIR + "/workflow/" + config["chr_table"],
         indir="{basedir}/lostruct/global/run_lostruct",
         outdir="{basedir}/lostruct/global/plot_lostruct_mds",
         plot_dir="{basedir}/figures/lostruct/global",
@@ -204,9 +204,9 @@ rule plot_lostruct_outlier_pca_global:
         rscript=config["scriptdir"] + "/plot_lostruct_outlier_pca.R",
         cov_dir="{basedir}/lostruct/global/run_pcangsd_with_lostruct_outliers",
         plot_dir="{basedir}/figures/lostruct/global",
-        sample_table_path="{basedir}/docs/" + config["sample_table"],
-        color_by=config["lostruct"]["color_by"],
-        chr_table_path=config["basedir"] + "/docs/" + config["chr_table"],
+        sample_table_path="{basedir}/workflow/" + config["sample_table"],
+        color_by=POP_L1_COL,
+        chr_table_path=BASEDIR + "/workflow/" + config["chr_table"],
         k=config["lostruct"]["k"],
     threads: 4
     log: "{basedir}/lostruct/global/plot_lostruct_outlier_pca/plot_lostruct_outlier_pca.log"

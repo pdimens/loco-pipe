@@ -4,14 +4,13 @@ rule get_theta:
     input:
         ref=REFERENCE,
         fai=REFERENCE+".fai",
-        bamlist="{basedir}/docs/{population}_" + BAMLIST,
+        bamlist="{basedir}/workflow/{population}_" + BAMLIST,
         site_list="{basedir}/angsd/get_depth_global/{chr}.site_list",
     output:
         expand("{{basedir}}/angsd/get_theta/{{population}}.{{chr}}.{ext}",
                ext=[ "arg", "sfs", "thetas.idx", "thetas.gz", "thetas.tsv.gz", "saf.gz", "saf.idx", "saf.pos.gz", "average_thetas.pestPG" ]),
         done = touch("{basedir}/angsd/get_theta/{population}.{chr}.done"),
-    threads:
-        config["get_theta"]["threads"]
+    threads: THREADS
     params:
         outdir="{basedir}/angsd/get_theta",
         outbase="{basedir}/angsd/get_theta/{population}.{chr}",
@@ -84,7 +83,7 @@ rule get_theta:
 # This rule generates a barplot for sfs distribution of each population.
 rule plot_sfs_distribution:
     input:
-        chr_list = "{basedir}/docs/chr_list.txt",
+        chr_list = "{basedir}/workflow/chr_list.txt",
         done = expand("{{basedir}}/angsd/get_theta/{{population}}.{chr}.done", chr = CHRS),
     output:
         plot = "{basedir}/figures/sfs/{population}.sfs.png",

@@ -16,7 +16,7 @@ z_cutoff <- args[6] %>% as.integer()
 fig_width <- args[7] %>% as.integer()
 fig_height <- args[8] %>% as.integer()
 
-# chr_table_path <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/docs/chr_table.tsv"
+# chr_table_path <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/workflow/chr_table.tsv"
 # out_dir <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/pop/lostruct/global/r"
 # plot_dir <- "/global/scratch/users/nicolas931010/rockfish_popgen/korean/by_group/pop/figures/lostruct/global"
 # k <- 10

@@ -13,7 +13,7 @@ color_by <- args[4]
 
 # indir <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/angsd/heterozygosity"
 # outdir <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/figures/heterozygosity"
-# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/docs/metadata.tsv"
+# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/workflow/metadata.tsv"
 # color_by <- "pca_cluster"
 
 ## read in the data

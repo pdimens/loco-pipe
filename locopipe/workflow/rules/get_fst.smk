@@ -10,8 +10,7 @@ rule get_fst:
         expand("{{basedir}}/angsd/get_fst/{{population1}}.{{population2}}.{{chr}}.{ext}",
                ext = [ "2dSFS", "alpha_beta.txt", "alpha_beta.fst.idx", "alpha_beta.fst.gz", "average_fst.txt" ]),
         touch("{basedir}/angsd/get_fst/{population1}.{population2}.{chr}.done"),
-    threads:
-        config["get_fst"]["threads"]
+    threads: THREADS
     params:
         outdir = "{basedir}/angsd/get_fst",
         ref_type = config["ref_type"],

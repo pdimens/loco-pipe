@@ -22,7 +22,7 @@ if(length(args)>8){
 # indir <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/ohana/global"
 # file <- "combined.subsetted"
 # plot <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/figures/ohana/global/combined.subsetted.png"
-# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/docs/metadata.tsv"
+# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/workflow/metadata.tsv"
 # group_by <- "pca_cluster"
 # min_k <- 2
 # max_k <- 7 
@@ -30,7 +30,7 @@ if(length(args)>8){
 # indir <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/ohana/local"
 # file <- "combined.subsetted"
 # plot <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/figures/ohana/local/vermilion.combined.subsetted.png"
-# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/docs/metadata.tsv"
+# sample_table_path <- "/global/scratch/users/nicolas931010/loco-pipe/toyfish/workflow/metadata.tsv"
 # group_by <- "pca_cluster"
 # min_k <- 2
 # max_k <- 7 
