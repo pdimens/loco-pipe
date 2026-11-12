@@ -50,8 +50,7 @@ run:
 # -----------------------------------------------------------------------------------------------------------------------
 # The following parameters are needed for multiple analyses
 # -----------------------------------------------------------------------------------------------------------------------
-# Full path of the project base directory. 
-# This folder should contain subfolders such as "config" and "docs".
+# Full path of the project directory created using 'loco-init', where the 'workflow' folder is
 basedir: {basedir}
 
 # Full path of the reference genome.
@@ -61,11 +60,10 @@ basedir: {basedir}
 # having a highly-fragmented reference genome will create too many parallel jobs and might put cluster in high stress.
 reference: {reference}
 
-# Full path of the folder in which R scripts required for the pipeline are saved (i.e. you will need to change the 
-# "/path/to/" part to the path where loco-pipe is downloaded on your computer.)
+# Full path of the folder in which R scripts required for the pipeline are saved, usually 'workflow/scripts' 
 scriptdir: {scriptdir}
 
-# The name of the tab-separated sample table file.
+# The name of the tab-separated sample table file, usually 'workflow/samples.tsv'
 # It should include at least three columns: "sample_name", "bam", and a third column that specifies the grouping 
 # information. If you do not have a grouping variable a priori when first running loco-pipe, please make sure to 
 # create a fake column in your dataset with all samples having the same entry.
@@ -75,7 +73,7 @@ sample_table: {sampletable}
 # If you do not have a grouping variable a priori when first running loco-pipe, enter the name of the fake column.
 pop_level: {groupcol}
 
-# The name of the tab-separated chromosme table. 
+# The name of the tab-separated chromosome table. Usually 'workflow/contigs.tsv'
 # It should have one or two unnamed columns. The first column should contain the original
 # chromosome/scaffold/contig names that you would like to include in the analysis. These should exactly match
 # the names in the reference genome. The second column is optional, and it should contain the new names
