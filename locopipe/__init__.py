@@ -1,3 +1,4 @@
+from _io import TextIOWrapper
 import click
 from importlib import resources
 from itertools import chain
@@ -79,6 +80,9 @@ def init(output, reference, samples, simple, hpc):
         )
     
     try:
+        # open and read 1 byte
+        with open(reference, 'r') as fa:
+            fa.read(1)
         fa = open(reference, 'r')
     except UnicodeDecodeError:
         import gzip
