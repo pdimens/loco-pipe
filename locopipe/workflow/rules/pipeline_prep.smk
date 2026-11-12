@@ -25,7 +25,7 @@ rule get_bamlist_global:
   input: 
     tsv_file = SAMPLE_TABLE_PATH
   output: 
-    txt_file = "workflow/"+BAMLIST
+    "workflow/" + BAMLIST
   params:
     filename = BAMLIST,
     basedir = BASEDIR
@@ -40,8 +40,8 @@ rule get_bamlist_local:
     basedir = BASEDIR,
     grouping = POP_L1_COLNAME,
     filename = BAMLIST
-  output: 
-    txt_file = expand("workflow/{population}_"+ BAMLIST, population = POP_L1)
+  output:
+    expand("workflow/{population}_"+ BAMLIST, population = POP_L1)
   run:
     extract_each_bam_column_to_txt(input.tsv_file, "\t", params.grouping, params.basedir, params.filename)
 
@@ -49,22 +49,20 @@ rule get_bamlist_local:
 
 rule index_bam:
   input: 
-    bam = "{bam}"
+    "{bam}"
   output: 
-    bai = "{bam}.bai"
-  threads: 1
+    "{bam}.bai"
   conda:
     "../envs/samtools.yaml"
-  shell: "samtools index {input.bam}"
+  shell:
+    "samtools index {input}"
   
 # This rule extract the first column of the chromosome table to form a chromosome list. The resulting chromosome list is used to 
 # restrict analyses to a predetermined set of chromosomes for certain analyses (e.g. heterozygosity estimation)
 rule get_chr_list:
   input: 
-      chr_table = "workflow/" + config["chr_table"],
+      CHR_TABLE_PATH
   output:
-      chr_list = "workflow/chr_list.txt",
+      "workflow/chr_list.txt",
   shell:
-      '''
-      cut -f 1 {input.chr_table} > {output.chr_list}
-      '''
+      "cut -f 1 {input} > {output}"

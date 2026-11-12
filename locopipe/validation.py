@@ -48,8 +48,6 @@ class BAMfile(click.ParamType):
 LOCOFILES = [
     'profile.yaml',
     'locopipe.yaml',
-    'docs/contigs.tsv',
-    'docs/samples.tsv',
     'workflow/envs/angsd.yaml',
     'workflow/envs/loco-pipe.yaml',
     'workflow/envs/lostruct.yaml',
