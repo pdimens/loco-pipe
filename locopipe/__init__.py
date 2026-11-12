@@ -1,4 +1,3 @@
-from _io import TextIOWrapper
 import click
 from importlib import resources
 from itertools import chain
@@ -25,14 +24,19 @@ def init(output, reference, samples, simple, hpc):
     FASTA file that was used to create the alignment files. Provide the input BAM files and/or
     directories at the end of the command as individual files/folders, using shell wildcards (e.g. `data/acro*.bam`), or both.
     """
-    os.makedirs(os.path.join(output, "workflow"), exist_ok=True)
-    workdir = os.path.relpath(os.path.join(output, "workflow"))
     checklist = []
+    ## ----- Establish workflow directory --------------------
+    workdir = os.path.relpath(os.path.join(output, "workflow"))
+    os.makedirs(workdir, exist_ok=True)
+
+    ## ----- Copy over loco-pipe -----------------------------
     shutil.copytree(
         resources.files('locopipe.workflow').as_posix(), f"{output}/workflow",
         dirs_exist_ok=True,
         ignore = shutil.ignore_patterns('*__init__.py', '*__pycache__', 'configs')    
     )
+
+    ## ----- Setup and write profile.yaml -------------------
     profile = {
         **({'__use_yte__': True} if hpc else {}),
         "directory": os.path.abspath(output),
@@ -58,6 +62,8 @@ def init(output, reference, samples, simple, hpc):
     with open(os.path.join(workdir, 'profile.yaml'), "w", encoding="utf-8") as sm_profile:
         yaml.dump(profile, sm_profile, sort_keys=False)
 
+
+    ## ----- Setup and write locopipe.yaml, the config yaml file -------------- 
     with open(os.path.join(workdir, "locopipe.yaml"), 'w') as cnfg:
         with open(resources.files("locopipe.configs") / 'config.yaml', 'r') as f:
             cnf = f.read().format(
@@ -77,10 +83,12 @@ def init(output, reference, samples, simple, hpc):
         checklist.append(
             f'• adjust \033[92m{os.path.join(workdir, 'locopipe.yaml')}\033[0m for your project'
         )
-    
+
+
+    ## ----- Populate contigs.tsv with numbered contig names ---------
     try:
-        # open and read 1 byte
         with open(reference, 'r') as fa:
+            # test by reading 1 byte
             fa.read(1)
         fa = open(reference, 'r')
     except UnicodeDecodeError:
@@ -98,6 +106,8 @@ def init(output, reference, samples, simple, hpc):
     if id >= 80:
         checklist.append(f"• curate \033[92m{os.path.join(os.path.relpath(output), "docs", "contigs.tsv")}\033[0m so it has <80 contigs")
 
+
+    ## ----- Setup samples.tsv with sample names and BAM files ------------
     with open(os.path.join(workdir, "samples.tsv"), 'w') as tb:
         tb.write("sample_name\tbam\tpopulation\n")
         for i in list(chain.from_iterable(samples)):
@@ -108,6 +118,8 @@ def init(output, reference, samples, simple, hpc):
         f'• assign samples to populations in \033[92m{os.path.join(os.path.relpath(output), 'docs', 'samples.tsv')}\033[0m'
     )
 
+
+    ## ----- Print checklist based on above ---------------
     print("\nChecklist before running loco-pipe", file = sys.stderr)
     print("──────────────────────────────────", file = sys.stderr)
     print("\n".join(checklist), file = sys.stderr)
@@ -133,7 +145,7 @@ def start(directory, threads, dry):
     cmd += ["--profile", os.path.join(workflowdir, 'profile.yaml')]
     if dry:
         cmd += ["-n"]
-    print("Starting loco-pipe...")
+    print("Starting loco-pipe...", file = sys.stderr)
     try:
         subprocess.run(cmd)
     except KeyboardInterrupt:
