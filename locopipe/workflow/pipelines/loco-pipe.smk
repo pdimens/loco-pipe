@@ -11,8 +11,8 @@ BASEDIR  = config["basedir"]
 WORKFLOWDIR  = os.path.join(BASEDIR, 'workflow')
 
 REFERENCE = config["reference"]
-CHR_TABLE_PATH = os.path.join("workflow", config["chr_table"])
-SAMPLE_TABLE_PATH = os.path.join("workflow", config["sample_table"])
+CHR_TABLE_PATH = config["chr_table"]
+SAMPLE_TABLE_PATH = config["sample_table"]
 POP_L1_COLNAME = config["pop_level"]
 MINMAF      = config["minmaf"]
 MINQ        = config["minq"]

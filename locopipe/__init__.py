@@ -71,8 +71,8 @@ def init(output, reference, samples, simple, hpc):
                 reference = os.path.abspath(reference),
                 scriptdir = os.path.abspath(f"{output}/workflow/scripts"),
                 groupcol = "population",
-                sampletable = "samples.tsv",
-                chromtable = "contigs.tsv"
+                sampletable = "workflow/samples.tsv",
+                chromtable = "workflow/contigs.tsv"
             )
         if not simple:
             cnfg.write(cnf + "\n")
