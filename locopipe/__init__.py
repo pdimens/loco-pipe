@@ -25,7 +25,6 @@ def init(output, reference, samples, simple, hpc):
     FASTA file that was used to create the alignment files. Provide the input BAM files and/or
     directories at the end of the command as individual files/folders, using shell wildcards (e.g. `data/acro*.bam`), or both.
     """
-    os.makedirs(os.path.join(output, "docs"), exist_ok=True)
     os.makedirs(os.path.join(output, "workflow"), exist_ok=True)
     workdir = os.path.relpath(os.path.join(output, "workflow"))
     checklist = []
