@@ -2,45 +2,39 @@ import numpy as np
 import pandas as pd
 import os 
 
-configfile: "config/config.yaml"
-
-#################################################
-## Variables read directly from the config file
+######### Variables from the config file ###############
 
 BASEDIR  = config["basedir"]
 WORKFLOWDIR  = os.path.join(BASEDIR, 'workflow')
 
-REFERENCE = config["reference"]
-CHR_TABLE_PATH = config["chr_table"]
+REFERENCE         = config["reference"]
+CHR_TABLE_PATH    = config["chr_table"]
 SAMPLE_TABLE_PATH = config["sample_table"]
-POP_L1_COLNAME = config["pop_level"]
-MINMAF      = config["minmaf"]
-MINQ        = config["minq"]
-MINMAPQ     = config["minmapq"]
-MININD      = config["minind"]
-MINDEPTHIND = config["mindepthind"]
-THREADS     = config["threads"]
+POP_L1_COLNAME    = config["pop_level"]
+MINMAF            = config["minmaf"]
+MINQ              = config["minq"]
+MINMAPQ           = config["minmapq"]
+MININD            = config["minind"]
+MINDEPTHIND       = config["mindepthind"]
+THREADS           = config["threads"]
 
 
-#################################################
-## Variables generated from the above
+###### Variables generated from the above ##########
 
-CHR_TABLE = pd.read_csv(CHR_TABLE_PATH, sep="\t",header=None, index_col=None)
-CHRS = CHR_TABLE.iloc[:,0]
+CHR_TABLE    = pd.read_csv(CHR_TABLE_PATH, sep="\t",header=None, index_col=None)
+CHRS         = CHR_TABLE.iloc[:,0]
 SAMPLE_TABLE = pd.read_csv(SAMPLE_TABLE_PATH, sep="\t")
-ALL_BAMS = SAMPLE_TABLE["bam"].unique()
-ALL_SAMPLES = SAMPLE_TABLE["sample_name"].unique()
-BAM_DICT = SAMPLE_TABLE.set_index('sample_name')['bam'].to_dict()
-POP_L1_COL = SAMPLE_TABLE[POP_L1_COLNAME]
-POP_L1 = POP_L1_COL.unique()
+ALL_BAMS     = SAMPLE_TABLE["bam"].unique()
+ALL_SAMPLES  = SAMPLE_TABLE["sample_name"].unique()
+BAM_DICT     = SAMPLE_TABLE.set_index('sample_name')['bam'].to_dict()
+POP_L1_COL   = SAMPLE_TABLE[POP_L1_COLNAME]
+POP_L1       = POP_L1_COL.unique()
 
-#################################################
-## Other variables
+############ Other variables #####################
 
 BAMLIST = "bamlist.txt"
 
-#################################################
-## Rule orders
+############### Rule orders ######################
 
 wildcard_constraints:
     chr = '|'.join([x for x in CHRS]),
@@ -49,16 +43,14 @@ wildcard_constraints:
     k = '[0-9]+',
     basedir = BASEDIR,
 
-#################################################
-## Wildcard constraints
+############ Wildcard constraints ###############
 
 ruleorder: 
     snp_calling_global > subset_snp_list_global > combine_snp_list_global > combine_subsetted_beagle_global
 ruleorder: 
     get_site_list_global > combine_site_list_global
 
-#################################################
-## Build paths for output files
+###### Build paths for output files ############
 
 POP_L1_FST_PLOT_PATH = []
 POP_L1_FST_PATH = []
@@ -67,8 +59,7 @@ for i in range(len(POP_L1)):
     POP_L1_FST_PLOT_PATH.append('figures/fst/' + POP_L1[i] + '.' + POP_L1[j])
     POP_L1_FST_PATH.append('angsd/get_fst/' + POP_L1[i] + '.' + POP_L1[j])
 
-#################################################
-## Specify output files
+########## Specify output files #################
 
 rule all:
     input:
@@ -134,8 +125,8 @@ rule all:
         "figures/lostruct/global/plot_lostruct_mds.done" if config['run']["lostruct_global"] else [],
         "figures/lostruct/global/plot_lostruct_outlier_pca.done" if config['run']["lostruct_global"] else [],
 
-#################################################
-## Modular Snakefiles to be included
+
+########### Snakefiles to be included ###############
 
 include: "../rules/pipeline_prep.smk"
 include: "../rules/get_depth_global.smk"
