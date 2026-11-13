@@ -1,25 +1,6 @@
 loco-pipe: a Snakemake pipeline for low-coverage whole-genome sequencing
 ================
 
-- <a href="#key-features" id="toc-key-features">Key features</a>
-- <a href="#currently-supported-functionalities"
-  id="toc-currently-supported-functionalities">Currently supported
-  functionalities</a>
-- <a href="#complete-pipeline-flowchart"
-  id="toc-complete-pipeline-flowchart">Complete pipeline flowchart</a>
-- <a href="#before-you-start" id="toc-before-you-start">Before you
-  start</a>
-- <a href="#setting-up-the-pipeline"
-  id="toc-setting-up-the-pipeline">Setting up the pipeline</a>
-- <a href="#preparing-the-project-directory-and-required-input-files"
-  id="toc-preparing-the-project-directory-and-required-input-files">Preparing
-  the project directory and required input files</a>
-- <a href="#launching-the-pipeline"
-  id="toc-launching-the-pipeline">Launching the pipeline</a>
-- <a href="#future-directions" id="toc-future-directions">Future
-  directions</a>
-- <a href="#citation" id="toc-citation">Citation</a>
-
 **loco-pipe** is an automated Snakemake pipeline that streamlines a set
 of essential population genomic analyses for **lo**w-**co**verage whole
 genome sequencing (lcWGS) data.
