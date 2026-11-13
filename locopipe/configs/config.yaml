@@ -253,16 +253,16 @@ get_fst:
   extra: ""
 
   # The number of SNPs to be included into each fixed-SNP window.
-  snp_window_size: 100
+  snp_window_size: 1000
 
   # The number of bases to be included into each fixed-length window.
   bp_window_size: 10000
 
   # Height of the Manhattan plot, in inches.
-  fig_height: 3
+  fig_height: 10
 
   # Width of the Manhattan plot, in inches. You will likely need to enter a much larger number when using a real dataset.
-  fig_width: 3
+  fig_width: 10
 
 # -----------------------------------------------------------------------------------------------------------------------
 # The following parameters are needed by the "get_heterozygosity.smk" file, which generates individual-level genome-wide 
@@ -302,10 +302,10 @@ get_theta:
   realsfs_extra: ""
 
   # Height of the theta plot, in inches.
-  fig_height: 5
+  fig_height: 10
 
   # Width of the theta plot, in inches. You will likely need to enter a much larger number when using a real dataset.
-  fig_width: 5
+  fig_width: 10
 
 # -----------------------------------------------------------------------------------------------------------------------
 # The following parameters are needed by the "run_lostruct.smk" file, which runs local PCA with the lostruct package in R
@@ -317,7 +317,7 @@ lostruct:
   # You will likely need to enter a much larger number when using a real dataset.
   # The highest number of windows this pipeline can handle is 46340, so it's important to use a SNP window size that 
   # results in fewer (ideally a lot fewer) than 46340 windows in total across the genome.
-  snp_window_size: 100
+  snp_window_size: 1000
 
   # Minimum minor allele frequency filter when running the PCA.
   minmaf: 0.05

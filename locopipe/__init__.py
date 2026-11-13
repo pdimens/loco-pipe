@@ -28,6 +28,8 @@ def init(output, reference, samples, simple, hpc):
     ## ----- Establish workflow directory --------------------
     workdir = os.path.relpath(os.path.join(output, "workflow"))
     os.makedirs(workdir, exist_ok=True)
+    prjSamples = os.path.join(workdir, 'project.samples')
+    prjContigs = os.path.join(workdir, 'project.contigs')
 
     ## ----- Copy over loco-pipe -----------------------------
     shutil.copytree(
@@ -69,10 +71,10 @@ def init(output, reference, samples, simple, hpc):
             cnf = f.read().format(
                 basedir = os.path.abspath(output),
                 reference = os.path.abspath(reference),
-                scriptdir = os.path.abspath(f"{output}/workflow/scripts"),
+                scriptdir = os.path.abspath(f"{workdir}/scripts"),
                 groupcol = "population",
-                sampletable = "workflow/samples.tsv",
-                chromtable = "workflow/contigs.tsv"
+                sampletable = prjSamples,
+                chromtable = prjContigs
             )
         if not simple:
             cnfg.write(cnf + "\n")
@@ -94,7 +96,7 @@ def init(output, reference, samples, simple, hpc):
     except UnicodeDecodeError:
         import gzip
         fa = gzip.open(reference, 'rt')
-    with open(os.path.join(workdir, "contigs.tsv"), 'w') as tb:
+    with open(os.path.join(workdir, "project.contigs"), 'w') as tb:
         id = 0
         for i in fa:
             if i.startswith(">"):
@@ -103,19 +105,19 @@ def init(output, reference, samples, simple, hpc):
                 tb.write(f"{_name}\t{id}\n")
     fa.close()
 
-    if id >= 80:
-        checklist.append(f"• curate \033[92m{os.path.join(os.path.relpath(output), "docs", "contigs.tsv")}\033[0m so it has <80 contigs")
+    if id >= 100:
+        checklist.append(f"• curate \033[92m{prjContigs}\033[0m so it has <100 contigs")
 
 
     ## ----- Setup samples.tsv with sample names and BAM files ------------
-    with open(os.path.join(workdir, "samples.tsv"), 'w') as tb:
+    with open(os.path.join(workdir, "project.samples"), 'w') as tb:
         tb.write("sample_name\tbam\tpopulation\n")
         for i in list(chain.from_iterable(samples)):
             _name = Path(i).stem
             tb.write(f"{_name}\t{i}\tgroupname\n")
     
     checklist.append(
-        f'• assign samples to populations in \033[92m{os.path.join(os.path.relpath(output), 'docs', 'samples.tsv')}\033[0m'
+        f'• assign samples to populations in \033[92m{prjSamples}\033[0m'
     )
 
 

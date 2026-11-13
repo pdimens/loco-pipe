@@ -39,25 +39,25 @@ pixi shell
 pip install . -e
 ```
 
-2. Initialize an output directory
+2. Initialize a locopipe project
 ```bash
 # usage
 loco-init OUTPUT_DIR REFERENCE.FASTA BAM_FILES...
 ```
 
 ```bash
-loco-init toytest toyfish/reference/toy_refgen.fa toyfish/bams/
+loco-init toyfish example/reference/toy_refgen.fa example/data/
 ```
 
 3. Run loco-pipe
 ```bash
-loco-pipe -t 25 toytest
+loco-pipe -t 25 toyfish
 ```
 
 Use `--help` to see the command docstrings.
 
 ## Key features
-
+- Mostly-automatic configuration
 - Streamlining of several essential population genomic analyses
 - Can be launched with a single line of code
 - Incorporation of key filtering steps and best practices for
@@ -229,153 +229,119 @@ as a black box can lead to spurious results and erroneous conclusions.**
     )
     ```
 
-## Preparing the project directory and required input files
+## Preparing your data
+Prepare a **sample table** and a **chromosome table**. Both of these
+should be tab separated text files. We recommend storing them in the
+`BASEDIR/workflow`. You can name them however you want.
 
-1.  Set up the file structure.
+### Samples
+> [!TIP]
+> **loco-init creates this table automatically**, but you will need to update the third column for meaningful population distinctions.
 
-    - First, create a base directory for your project. This folder
-      should be separate from the `loco-pipe` folder. You can name it
-      however you want (just avoid special characters other than dashes
-      and underscores), but we will refer to the full path of this
-      folder as `BASEDIR`.
+This table should contain a minimum of three columns
+in no particularly order. One column should be named exactly as
+`sample_name` and it should contain sample IDs of all the samples
+to be included in the analysis. Another column should be named
+exactly as `bam` and it should store the full paths of the bam
+file for each sample. A third column should specify the grouping
+information you wish to segregate the samples by. These could be
+species, subspecies, ecotypes, populations, sampling sites, sex,
+etc. You will need to enter the name of the third column into the
+pipeline configuration file `config.yaml`. Below is an example of
+a sample table. 
 
-    - Within `BASEDIR`, create two new folders: `docs`, and `config`.
 
-    - You can also have your sequencing data (e.g. fastq and bam files)
-      and the reference genome in separate folders in `BASEDIR`, but
-      this is not required.
+| sample_name | bam                                             | species   | population  |
+|:------------|:------------------------------------------------|:----------|:------------|
+| ABLG11920-1 | /path/to/loco-pipe/example/data/ABLG11920-1.bam | sunset    | sunset      |
+| ABLG12067-1 | /path/to/loco-pipe/example/data/ABLG12067-1.bam | sunset    | sunset      |
+| ABLG11918-1 | /path/to/loco-pipe/example/data/ABLG11918-1.bam | vermilion | vermilion_1 |
+| ABLG11913-1 | /path/to/loco-pipe/example/data/ABLG11913-1.bam | vermilion | vermilion_1 |
+| ABLG9871-1  | /path/to/loco-pipe/example/data/ABLG9871-1.bam  | vermilion | vermilion_2 |
+| ABLG11795-1 | /path/to/loco-pipe/example/data/ABLG11795-1.bam | vermilion | vermilion_2 |
+| ABLG11937-1 | /path/to/loco-pipe/example/data/ABLG11937-1.bam | vermilion | vermilion_3 |
+| ABLG11940-1 | /path/to/loco-pipe/example/data/ABLG11940-1.bam | vermilion | vermilion_3 |
 
-2.  Prepare a **sample table** and a **chromosome table**. Both of these
-    should be tab separated text files. Store them in the `docs` folder
-    in `BASEDIR`. You can name them however you want.
+A few tips about the sample table:
+- Sample names have to be unique, and each sample should
+  correspond to a single bam file (i.e. we assume that if you
+  have multiple bam files for a single sample, they have already
+  been merged). In cases where you would like to keep different
+  bam files from the same sample separate, e.g. for batch effect
+  control, you will need to distinguish them by assigning them
+  different sample names, e.g. by adding a suffix to their
+  original names. If you do this, please also note that
+  including multiple copies of the same sample can severely bias
+  certain analyses, such as PCA, so we recommend you to only do
+  this in the first iteration of the pipeline, and once the risk
+  of batch effect is eliminated, you should merge or remove the
+  duplicated samples.
+- You can have multiple grouping variables in the sample table,
+  although you may need to launch the pipeline more than once in
+  order to conduct analyses based on different grouping
+  variables.
+- In practice, you may need to have multiple versions of the
+  sample table. For example, you may include all samples in the
+  first run, exclude some problematic one and/or change the
+  grouping of others based on the result of the first run, and
+  launch the pipeline again with an updated sample table.
+- In case that you don’t have any grouping information a priori,
+  you still need to have a fake grouping column with all samples
+  having the same entry for plotting purposes (e.g. PCA and
+  admixture). In this case, you will also need to turn off all
+  population-level analyses in the configuration file (see
+  below).
 
-    - Sample table: This table should contain a minimum of three columns
-      in no particularly order. One column should be named exactly as
-      `sample_name` and it should contain sample IDs of all the samples
-      to be included in the analysis. Another column should be named
-      exactly as `bam` and it should store the full paths of the bam
-      file for each sample. A third column should specify the grouping
-      information you wish to segregate the samples by. These could be
-      species, subspecies, ecotypes, populations, sampling sites, sex,
-      etc. You will need to enter the name of the third column into the
-      pipeline configuration file `config.yaml`. Below is an example of
-      a sample table.
+### Contigs
+> [!TIP]
+> **loco-init creates this table automatically**, but you will need to curate it to <100 contigs
 
-      | sample_name | bam                                             | species   | population  |
-      |:------------|:------------------------------------------------|:----------|:------------|
-      | ABLG11920-1 | /path/to/loco-pipe/toyfish/bams/ABLG11920-1.bam | sunset    | sunset      |
-      | ABLG12067-1 | /path/to/loco-pipe/toyfish/bams/ABLG12067-1.bam | sunset    | sunset      |
-      | ABLG11918-1 | /path/to/loco-pipe/toyfish/bams/ABLG11918-1.bam | vermilion | vermilion_1 |
-      | ABLG11913-1 | /path/to/loco-pipe/toyfish/bams/ABLG11913-1.bam | vermilion | vermilion_1 |
-      | ABLG9871-1  | /path/to/loco-pipe/toyfish/bams/ABLG9871-1.bam  | vermilion | vermilion_2 |
-      | ABLG11795-1 | /path/to/loco-pipe/toyfish/bams/ABLG11795-1.bam | vermilion | vermilion_2 |
-      | ABLG11937-1 | /path/to/loco-pipe/toyfish/bams/ABLG11937-1.bam | vermilion | vermilion_3 |
-      | ABLG11940-1 | /path/to/loco-pipe/toyfish/bams/ABLG11940-1.bam | vermilion | vermilion_3 |
+This table should contain one or two columns.
+These columns should be **unnamed**. The first column is required,
+and it records the names of all chromosomes/scaffolds/contigs that
+you would like to include in the analysis. These should exactly
+match the names in the reference genome. The second column is
+optional, and it records shortened or alternative names of the
+chromosomes/scaffolds/contigs which you would like to show on the
+plots. If the second column is empty, the original names will be
+shown. Below is an example of a chromosome table.
 
-      > A few tips about the sample table:
-      > - Sample names have to be unique, and each sample should
-      >   correspond to a single bam file (i.e. we assume that if you
-      >   have multiple bam files for a single sample, they have already
-      >   been merged). In cases where you would like to keep different
-      >   bam files from the same sample separate, e.g. for batch effect
-      >   control, you will need to distinguish them by assigning them
-      >   different sample names, e.g. by adding a suffix to their
-      >   original names. If you do this, please also note that
-      >   including multiple copies of the same sample can severely bias
-      >   certain analyses, such as PCA, so we recommend you to only do
-      >   this in the first iteration of the pipeline, and once the risk
-      >   of batch effect is eliminated, you should merge or remove the
-      >   duplicated samples.
-      > - You can have multiple grouping variables in the sample table,
-      >   although you may need to launch the pipeline more than once in
-      >   order to conduct analyses based on different grouping
-      >   variables.
-      > - In practice, you may need to have multiple versions of the
-      >   sample table. For example, you may include all samples in the
-      >   first run, exclude some problematic one and/or change the
-      >   grouping of others based on the result of the first run, and
-      >   launch the pipeline again with an updated sample table.
-      > - In case that you don’t have any grouping information a priori,
-      >   you still need to have a fake grouping column with all samples
-      >   having the same entry for plotting purposes (e.g. PCA and
-      >   admixture). In this case, you will also need to turn off all
-      >   population-level analyses in the configuration file (see
-      >   below).
+|                                             |     |
+|:--------------------------------------------|----:|
+| Sebastes_miniatus.Sebrube.F.HiC_scaffold_15 |  15 |
+| Sebastes_miniatus.Sebrube.F.HiC_scaffold_16 |  16 |
 
-    - Chromosome table: This table should contain one or two columns.
-      These columns should be **unnamed**. The first column is required,
-      and it records the names of all chromosomes/scaffolds/contigs that
-      you would like to include in the analysis. These should exactly
-      match the names in the reference genome. The second column is
-      optional, and it records shortened or alternative names of the
-      chromosomes/scaffolds/contigs which you would like to show on the
-      plots. If the second column is empty, the original names will be
-      shown. Below is an example of a chromosome table.
+> A few tips about the sample table:
+> - As mentioned earlier, we recommend against including too many
+>   chromosomes/scaffolds/contigs in the chromosome table (e.g. \<
+>   100).
+> - If you would like to use the plotting modules in loco-pipe to
+>   generate Manhattan-like plots automatically, we would also
+>   recommend to only include reference sequences of similar sizes
+>   (e.g. you shouldn’t include unincorporated contigs in the
+>   chromosome table when you have a chromosomal level assembly).
 
-      |                                             |     |
-      |:--------------------------------------------|----:|
-      | Sebastes_miniatus.Sebrube.F.HiC_scaffold_15 |  15 |
-      | Sebastes_miniatus.Sebrube.F.HiC_scaffold_16 |  16 |
 
-      > A few tips about the sample table:
-      > - As mentioned earlier, we recommend against including too many
-      >   chromosomes/scaffolds/contigs in the chromosome table (e.g. \<
-      >   100).
-      > - If you would like to use the plotting modules in loco-pipe to
-      >   generate Manhattan-like plots automatically, we would also
-      >   recommend to only include reference sequences of similar sizes
-      >   (e.g. you shouldn’t include unincorporated contigs in the
-      >   chromosome table when you have a chromosomal level assembly).
 
-3.  Edit the configuration files.
+## Edit the configuration files
+- The [pipeline configfile](https://github.com/sudmantlab/loco-pipe/locopipe/configs/blob/main/config.yaml)
+  `config.yaml`: This config file serves as an easily accessible way
+  to control the behavior of loco-pipe. You can use it to:
+  1. specify
+  the location of input files
+  2. include or exclude certain analyses from a loco-pipe run
+  3. adjust the parameter settings for different analyses. This config file is thoroughly annotated, so please read it through and make edits when needed.
 
-    - The [pipeline config
-      file](https://github.com/sudmantlab/loco-pipe/blob/main/config.yaml)
-      `config.yaml`: This config file serves as an easily accessible way
-      to control the behavior of loco-pipe. You can use it to 1) specify
-      the location of input files, 2) include or exclude certain
-      analyses from a loco-pipe run, 3) adjust the parameter settings
-      for different analyses. This config file is thoroughly annotated,
-      so please read it through and make edits when needed.
-      **Importantly**, please copy `config.yaml` to the `config` folder
-      in your project directory
-      (i.e. `cp $SOFTWARE_DIR/loco-pipe/config.yaml $BASEDIR/config/config.yaml`)
-      and make your edits there rather in the `loco-pipe` directory.
-
-    - (Optional) The [cluster config
-      file](https://github.com/sudmantlab/loco-pipe/blob/main/workflow/profiles/slurm/cluster_config.yaml)
-      `cluster_config.yaml` under `workflow/profiles`: This config files
-      specifies the resources each step of the pipeline can use on a
-      computer cluster. We have extensively tested loco-pipe with a
-      slurm job scheduler and an example slurm profile is included in
-      loco-pipe (`workflow/profiles/slurm`), but other job schedulers
-      should also work with Snakemake given an appropriate profile setup
-      (see [Snakemake
-      manual](https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles)
-      for details).
+- if you used `loco-init --hpc`, then you will need to update the HPC configuration in `workflow/profile.yaml` for your specific cluster
 
 ## Launching the pipeline
-
 1.  Activate the `loco-pipe` environment with
     `conda activate loco-pipe`.
 
-2.  You are now ready to launch the pipeline. We recommend to always
-    start with a dry run using the `-n` flag before actually running it.
-
-    ``` bash
-    snakemake \
-    --use-conda \
-    --conda-frontend conda \
-    --directory $BASEDIR \
-    --rerun-triggers mtime \
-    --scheduler greedy \
-    --snakefile $SOFTWARE_DIR/loco-pipe/workflow/pipelines/loco-pipe.smk
-    ```
-
-    When running loco-pipe on a computer cluster, make sure to use the
-    `--profile` flag to specify your cluster profile. Other flags that
-    may be useful are `--conda-prefix`, `--default-resources`,
-    `--printshellcmds`, `--cores`, etc.
+2. Use `loco-pipe` to run call snakemake on the project folder creatd by `loco-init`
+```bash
+loco-pipe -t 25 toyfish
+```
 
 ## Future directions
 
