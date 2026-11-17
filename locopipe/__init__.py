@@ -73,8 +73,8 @@ def init(output, reference, samples, simple, hpc):
                 reference = os.path.abspath(reference),
                 scriptdir = os.path.abspath(f"{workdir}/scripts"),
                 groupcol = "population",
-                sampletable = prjSamples,
-                chromtable = prjContigs
+                sampletable = os.path.abspath(prjSamples),
+                chromtable = os.path.abspath(prjContigs)
             )
         if not simple:
             cnfg.write(cnf + "\n")
