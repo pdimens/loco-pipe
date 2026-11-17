@@ -2,7 +2,7 @@ executor: slurm
 default-resources:
   slurm_account: $USER
   slurm_partition: regular
-  slurm_status_command: sacct
+  slurm_status_command: squeue -u $USER 
   slurm_jobname_prefix: locopipe
   mem_mb: attempt * 2000
   runtime: 10
